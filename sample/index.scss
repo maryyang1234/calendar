@@ -1,0 +1,11 @@
+.zr-cal-date-cell,
+.zr-cal-month-cell,
+.zr-cal-year-cell,
+.zr-cal-decade-cell {
+    text-align: center;
+    padding: 5px 10px;
+    &.zr-cal-active {
+        background: #3e86da;
+        color: white;
+    }
+}
