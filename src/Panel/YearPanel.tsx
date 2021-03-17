@@ -50,13 +50,13 @@ const YearPanel = ({ value, onChange, current, onCurrentChange }: YearPanelProps
     const context = useContext(CalendarContext);
     const cls = useMemo(() => {
         const prefix = context.prefix;
-        const yearPrefix = context.prefix + 'year-';
+        const yearPrefix = context.prefix + '-year';
         return {
-            table: yearPrefix + 'table',
-            body: yearPrefix + 'body',
-            row: yearPrefix + 'row',
-            cell: yearPrefix + 'cell',
-            active: prefix + 'active'
+            table: yearPrefix + '-table',
+            body: yearPrefix + '-body',
+            row: yearPrefix + '-row',
+            cell: yearPrefix + '-cell',
+            active: prefix + '-active'
         };
     }, [context.prefix]);
 

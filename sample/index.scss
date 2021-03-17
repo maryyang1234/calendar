@@ -3,9 +3,50 @@
 .zr-cal-year-cell,
 .zr-cal-decade-cell {
     text-align: center;
-    padding: 5px 10px;
+    padding: 0.25em 0.5em;
     &.zr-cal-active {
-        background: #3e86da;
+        background: #3860f4;
         color: white;
     }
+    &.zr-cal-prev,
+    &.zr-cal-next {
+        color: #cccccc;
+        &.zr-cal-active {
+            background: #d2d6ea;
+        }
+    }
+}
+.zr-cal-date-body .zr-cal-date-cell,
+.zr-cal-month-body .zr-cal-month-cell,
+.zr-cal-year-body .zr-cal-year-cell,
+.zr-cal-decade-body .zr-cal-decade-cell {
+    cursor: pointer;
+}
+
+.zr-cal-header {
+    display: flex;
+    .zr-cal-header-button {
+        cursor: pointer;
+        width: 3em;
+        text-align: center;
+    }
+    .zr-cal-header-switcher-wrap {
+        flex: 1;
+        text-align: center;
+        .zr-cal-header-switcher {
+            padding: 0.25em 0.5em;
+            cursor: pointer;
+        }
+    }
+}
+
+.zr-cal-date-table,
+.zr-cal-month-table,
+.zr-cal-year-table,
+.zr-cal-decade-table {
+    width: 100%;
+}
+
+.zr-cal {
+    color: #0a1633;
 }

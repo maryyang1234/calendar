@@ -26,7 +26,7 @@ interface DateInfo {
     t: Dayjs;
     day: number;
     date: number;
-    current?: 'prev' | 'current' | 'after';
+    current?: 'prev' | 'current' | 'next';
     today?: boolean;
     disabled?: boolean;
     active?: boolean;
@@ -57,7 +57,7 @@ const getDays = (v: Dayjs, activeV: Dayjs) => {
                 t,
                 day: t.day(),
                 date: t.date(),
-                current: index < min ? 'prev' : index > max ? 'after' : 'current',
+                current: index < min ? 'prev' : index >= max ? 'next' : 'current',
                 active: t.format('YYYYMMDD') === activeVString
             });
         }
@@ -85,14 +85,16 @@ const DateBody = ({ value, current, onChange, onCurrentChange }: DateBodyProps) 
     const context = useContext(CalendarContext);
     const cls = useMemo(() => {
         const prefix = context.prefix;
-        const datePrefix = context.prefix + 'date-';
+        const datePrefix = context.prefix + '-date';
         return {
-            table: datePrefix + 'table',
-            header: datePrefix + 'header',
-            body: datePrefix + 'body',
-            row: datePrefix + 'row',
-            cell: datePrefix + 'cell',
-            active: prefix + 'active'
+            table: datePrefix + '-table',
+            header: datePrefix + '-header',
+            body: datePrefix + '-body',
+            row: datePrefix + '-row',
+            cell: datePrefix + '-cell',
+            active: prefix + '-active',
+            prev: prefix + '-prev',
+            next: prefix + '-next'
         };
     }, [context.prefix]);
 
@@ -126,7 +128,12 @@ const DateBody = ({ value, current, onChange, onCurrentChange }: DateBodyProps) 
                                 return (
                                     <DateCell
                                         key={+day.t}
-                                        className={classnames(cls.cell, day.active && cls.active)}
+                                        className={classnames(
+                                            cls.cell,
+                                            day.active && cls.active,
+                                            day.current === 'prev' && cls.prev,
+                                            day.current === 'next' && cls.next
+                                        )}
                                         day={day}
                                         onClick={onDateClick}
                                     >

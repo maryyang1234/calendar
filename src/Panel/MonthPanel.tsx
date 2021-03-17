@@ -39,20 +39,20 @@ let MonthCell = ({
 MonthCell = memo(MonthCell);
 
 const MonthPanel = ({ value, onChange, current }: MonthPanelProps) => {
-    const valueMonth = useMemo(() => {
-        return value?.month();
-    }, [value]);
+    const valueMonth = useMemo(() => value?.month(), [value]);
+    const valueYear = useMemo(() => value?.year(), [value]);
+    const currentYear = useMemo(() => current.year(), [current]);
 
     const context = useContext(CalendarContext);
     const cls = useMemo(() => {
         const prefix = context.prefix;
-        const monthPrefix = context.prefix + 'month-';
+        const monthPrefix = context.prefix + '-month';
         return {
-            table: monthPrefix + 'table',
-            body: monthPrefix + 'body',
-            row: monthPrefix + 'row',
-            cell: monthPrefix + 'cell',
-            active: prefix + 'active'
+            table: monthPrefix + '-table',
+            body: monthPrefix + '-body',
+            row: monthPrefix + '-row',
+            cell: monthPrefix + '-cell',
+            active: prefix + '-active'
         };
     }, [context.prefix]);
 
@@ -72,7 +72,7 @@ const MonthPanel = ({ value, onChange, current }: MonthPanelProps) => {
             for (let j = 0; j < C_COL; j++) {
                 const index = i * C_COL + j;
                 let isActive = false;
-                if (valueMonth != null && valueMonth === index) {
+                if (valueMonth != null && valueYear === currentYear && valueMonth === index) {
                     isActive = true;
                 }
                 group.push(

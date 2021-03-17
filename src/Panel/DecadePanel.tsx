@@ -50,13 +50,13 @@ const DecadePanel = ({ value, onChange, current, onCurrentChange }: DecadePanelP
     const context = useContext(CalendarContext);
     const cls = useMemo(() => {
         const prefix = context.prefix;
-        const decadePrefix = context.prefix + 'decade-';
+        const decadePrefix = context.prefix + '-decade';
         return {
-            table: decadePrefix + 'table',
-            body: decadePrefix + 'body',
-            row: decadePrefix + 'row',
-            cell: decadePrefix + 'cell',
-            active: prefix + 'active'
+            table: decadePrefix + '-table',
+            body: decadePrefix + '-body',
+            row: decadePrefix + '-row',
+            cell: decadePrefix + '-cell',
+            active: prefix + '-active'
         };
     }, [context.prefix]);
 

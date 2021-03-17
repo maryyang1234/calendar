@@ -14,7 +14,7 @@ interface IContext {
 
 export const DefaultContext: IContext = {
     locale: 'en',
-    prefix: 'zr-cal-'
+    prefix: 'zr-cal'
 };
 
 export const Context = createContext<IContext>(DefaultContext);
