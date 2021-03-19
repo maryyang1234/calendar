@@ -33,7 +33,7 @@ const Month = ({ value, onChange, current, onCurrentChange }: CalendarProps) => 
 
     switch (mode) {
         case 'year':
-            return <Year defaultCurrent={current} onChange={onYearChange} />;
+            return <Year value={standardValue} defaultCurrent={current} onChange={onYearChange} />;
         default: {
             return (
                 <CalendarContext.Provider value={{ locale: 'en' }}>

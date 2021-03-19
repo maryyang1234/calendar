@@ -5,17 +5,47 @@
     text-align: center;
     padding: 0.25em 0.5em;
     &.zr-cal-active {
-        background: #3860f4;
-        color: white;
+        .zr-cal-date-content,
+        .zr-cal-month-content,
+        .zr-cal-year-content,
+        .zr-cal-decade-content {
+            background: #3860f4;
+            color: white;
+        }
     }
     &.zr-cal-prev,
     &.zr-cal-next {
         color: #cccccc;
         &.zr-cal-active {
-            background: #d2d6ea;
+            .zr-cal-date-content,
+            .zr-cal-month-content,
+            .zr-cal-year-content,
+            .zr-cal-decade-content {
+                background: #d2d6ea;
+            }
         }
     }
 }
+
+.zr-cal-date-content,
+.zr-cal-month-content,
+.zr-cal-year-content,
+.zr-cal-decade-content {
+    display: inline-block;
+}
+.zr-cal-date-content {
+    width: 4em;
+}
+.zr-cal-month-content {
+    width: 5em;
+}
+.zr-cal-year-content {
+    width: 6em;
+}
+.zr-cal-decade-content {
+    width: 12em;
+}
+
 .zr-cal-date-body .zr-cal-date-cell,
 .zr-cal-month-body .zr-cal-month-cell,
 .zr-cal-year-body .zr-cal-year-cell,

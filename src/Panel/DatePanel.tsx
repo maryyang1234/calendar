@@ -92,6 +92,7 @@ const DateBody = ({ value, current, onChange, onCurrentChange }: DateBodyProps) 
             body: datePrefix + '-body',
             row: datePrefix + '-row',
             cell: datePrefix + '-cell',
+            content: datePrefix + '-content',
             active: prefix + '-active',
             prev: prefix + '-prev',
             next: prefix + '-next'
@@ -137,7 +138,7 @@ const DateBody = ({ value, current, onChange, onCurrentChange }: DateBodyProps) 
                                         day={day}
                                         onClick={onDateClick}
                                     >
-                                        {day.date}
+                                        <span className={cls.content}>{day.date}</span>
                                     </DateCell>
                                 );
                             })}

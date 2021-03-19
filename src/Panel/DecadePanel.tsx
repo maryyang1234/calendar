@@ -35,7 +35,7 @@ const DecadePanel = ({ value, onChange, current, onCurrentChange }: DecadePanelP
         for (let i = 0; i < count; i++) {
             const year = baseYear + (i - 1) * 10;
             const latestYear = year + 9;
-            const active = valueYear === year;
+            const active = valueYear >= year && valueYear <= latestYear;
             const current = i === 0 ? 'prev' : i > 10 ? 'next' : 'current';
             const cellInfo = {
                 children: year + '-' + latestYear,

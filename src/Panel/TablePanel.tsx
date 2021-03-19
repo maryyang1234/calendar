@@ -45,7 +45,8 @@ const CellPanel = ({ onCellClick, cells, mode }: PanelProps) => {
             table: panelPrefix + '-table',
             body: panelPrefix + '-body',
             row: panelPrefix + '-row',
-            cell: panelPrefix + '-cell'
+            cell: panelPrefix + '-cell',
+            content: panelPrefix + '-content'
         };
     }, [context.prefix, mode]);
 
@@ -70,7 +71,7 @@ const CellPanel = ({ onCellClick, cells, mode }: PanelProps) => {
                         index={index}
                         onClick={onClick}
                     >
-                        {cellInfo?.children}
+                        <span className={cls.content}>{cellInfo?.children}</span>
                     </Cell>
                 );
             }
