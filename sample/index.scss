@@ -80,3 +80,42 @@
 .zr-cal {
     color: #0a1633;
 }
+.zr-timer-timer {
+    display: flex;
+    .zr-timer-container {
+        overflow: hidden;
+        display: flex;
+        border: 1px solid #ccc;
+        position: relative;
+        &::after {
+            content: ' ';
+            display: block;
+            position: absolute;
+            height: 1.5em;
+            width: 3em;
+            box-sizing: border-box;
+            top: 5rem;
+            border: 1px solid #ccc;
+            border-width: 1px 0;
+            pointer-events: none;
+        }
+        > div {
+            height: 1.5em;
+            padding: 5em 0;
+            overflow-y: scroll;
+            scroll-snap-type: y mandatory;
+            scroll-behavior: smooth;
+
+            > div {
+                width: 3em;
+                text-align: center;
+                line-height: 1.5em;
+                scroll-snap-align: center;
+                user-select: none;
+                &.active {
+                    font-weight: bold;
+                }
+            }
+        }
+    }
+}

@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import { Calendar, Month, Year } from '../src';
+import { Calendar, Month, Year, Timer } from '../src';
 import './index.scss';
 
 const dom = document.getElementById('app');
@@ -11,6 +11,7 @@ const App = () => (
         <Calendar />
         <Month />
         <Year onChange={console.log} onCurrentChange={console.log} />
+        <Timer />
     </div>
 );
 
