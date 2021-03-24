@@ -5,11 +5,13 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "bootstrap": "yarn || npm i",
     "start": "webpack serve --config sample/webpack.config.js",
     "build": "rm -rf build/ && NODE_ENV=production webpack",
     "build:lib": "rm-rf lib/ && babel src/ --extensions '.js,.jsx,.ts,.tsx' -d lib/",
     "build:ts": "tsc",
     "build:all": "npm run build && npm run build:lib && npm run build:ts",
+    "before-publish": "npm run build:all",
     "publish:patch": "npm run before-publish && npm version patch && npm publish",
     "publish:minor": "npm run before-publish && npm version minor && npm publish",
     "publish:major": "npm run before-publish && npm version major && npm publish"
