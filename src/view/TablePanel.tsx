@@ -19,7 +19,7 @@ interface PanelProps {
 const C_COL = 3;
 const C_ROW = 4;
 
-let Cell = ({
+const CellWithoutMemo = ({
     index,
     onClick,
     ...rest
@@ -35,7 +35,7 @@ let Cell = ({
     }, [onClick, index]);
     return <td onClick={onCellClick} {...rest} />;
 };
-Cell = memo(Cell);
+const Cell = memo(CellWithoutMemo);
 
 const CellPanel = ({ onCellClick, cells, mode }: PanelProps) => {
     const context = useContext(CalendarContext);

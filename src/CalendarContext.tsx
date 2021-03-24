@@ -14,7 +14,7 @@ export interface Context {
     // components?: CalendarComponents;
 }
 
-export const DefaultContext: Context = {
+export const DefaultContext: Required<Context> = {
     locale: {
         months,
         weekdays
@@ -28,9 +28,9 @@ export const contextKeys = Object.keys(DefaultContext) as ContextKeys[];
 const CalendarContext = createContext<Context>(DefaultContext);
 export default CalendarContext;
 
-export const pickContext = <T extends Context>(obj): [Context, T] => {
-    const rest = { ...obj };
-    const context = {};
+export const pickContext = <T extends Context>(obj: T): [Context, T] => {
+    const rest: any = { ...obj };
+    const context: Context = {};
     contextKeys.forEach(key => {
         if (key in rest) {
             context[key] = rest[key];

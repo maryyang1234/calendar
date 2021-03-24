@@ -4,30 +4,23 @@ import { Dayjs } from 'dayjs';
 import MonthPanel from './view/MonthPanel';
 import Header from './view/Header';
 import Year from './Year';
-import { TDate } from './interface';
 import standard from './util/standard';
+import { SharedCalendarProps, TDate } from './interface';
 import useUncontrolled from './useUncontrolled';
 import { withContext } from './CalendarContext';
 
-interface MonthProps {
-    value?: TDate;
-    defaultValue?: TDate;
-    onChange?: (v: Dayjs) => void;
-    current?: TDate;
-    defaultCurrent?: TDate;
-    onCurrentChange?: (v: Dayjs) => void;
-}
+type MonthProps = SharedCalendarProps;
 
 const Month = ({
     value: _value,
-    defaultValue,
+    defaultValue = null,
     onChange: _onChange,
     current: _current,
     defaultCurrent,
     onCurrentChange: _onCurrentChange
 }: MonthProps) => {
     const now = useMemo(() => new Date(), []);
-    const [value, onChange] = useUncontrolled<TDate, Dayjs>(_value, defaultValue, _onChange);
+    const [value, onChange] = useUncontrolled<TDate | null, Dayjs>(_value, defaultValue, _onChange);
     const standardValue = useMemo(() => standard(value), [value]);
     const [current, onCurrentChange] = useUncontrolled<TDate, Dayjs>(
         _current,
@@ -60,10 +53,9 @@ const Month = ({
                         onModeChange={onModeChange}
                     />
                     <MonthPanel
-                        value={standardValue}
+                        value={standardValue === null ? undefined : standardValue}
                         onChange={onChange}
                         current={standardCurrent}
-                        onCurrentChange={onCurrentChange}
                     />
                 </div>
             );

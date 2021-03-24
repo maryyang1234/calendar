@@ -1,20 +1,11 @@
-import { Dayjs } from 'dayjs';
 import React, { memo, useCallback, useContext, useMemo } from 'react';
 
 import CalendarContext from '../CalendarContext';
 import classnames from '../util/classnames';
+import { SharedPanelProps } from './interface';
 import TablePanel from './TablePanel';
 
-interface YearPanelProps {
-    // 选中值
-    value?: Dayjs;
-    // 选中回调
-    onChange: (t: Dayjs) => void;
-    // 当前面板值
-    current: Dayjs;
-    // 面板切换回调
-    onCurrentChange: (t: Dayjs) => void;
-}
+type YearPanelProps = SharedPanelProps;
 
 const C_COL = 3;
 const C_ROW = 4;
@@ -54,7 +45,7 @@ const YearPanel = ({ value, onChange, current, onCurrentChange }: YearPanelProps
             } else if (cellInfo.current === 'next') {
                 onCurrentChange(current.set('year', baseYear + 10));
             } else {
-                onChange?.(current.set('year', baseYear + index - 1));
+                onChange(current.set('year', baseYear + index - 1));
             }
         },
         [baseYear, cells, current, onChange, onCurrentChange]

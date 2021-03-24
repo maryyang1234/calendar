@@ -9,7 +9,7 @@ interface ScrollerInterface {
     onChange?: (v: number) => void;
 }
 
-let Stepper = ({
+const StepperWithoutMemo = ({
     index,
     onStepperClick,
     ...rest
@@ -19,9 +19,9 @@ let Stepper = ({
     }, [index, onStepperClick]);
     return <div onClick={onClick} {...rest} />;
 };
-Stepper = memo(Stepper);
+const Stepper = memo(StepperWithoutMemo);
 
-let Scroller = ({ value = 0, steps, onChange }: ScrollerInterface) => {
+const ScrollerWithoutMemo = ({ value = 0, steps, onChange }: ScrollerInterface) => {
     const [scrollLock, setScrollLock] = useState(true);
     const scroller = useRef<HTMLDivElement>(null);
 
@@ -31,6 +31,7 @@ let Scroller = ({ value = 0, steps, onChange }: ScrollerInterface) => {
     // update value from scrollerDOM scrollTop and trigger onChange
     const updateValue = useCallback(() => {
         const scrollerDOM = scroller.current;
+        if (!scrollerDOM) return;
         const firstChild = scrollerDOM.childNodes[0] as HTMLDivElement;
         const childHeight = firstChild.getClientRects()[0].height;
         const scrollTop = scrollerDOM.scrollTop;
@@ -41,6 +42,7 @@ let Scroller = ({ value = 0, steps, onChange }: ScrollerInterface) => {
     // update scrollerDom scroll bar to value
     const updateScroll = useCallback((v: number) => {
         const scrollerDOM = scroller.current;
+        if (!scrollerDOM) return;
         const firstChild = scrollerDOM.childNodes[0] as HTMLDivElement;
         const childHeight = firstChild.getClientRects()[0].height;
 
@@ -49,6 +51,7 @@ let Scroller = ({ value = 0, steps, onChange }: ScrollerInterface) => {
 
     useEffect(() => {
         const scrollerDOM = scroller.current;
+        if (!scrollerDOM) return;
 
         const onScroll = (e: Event) => {
             if (scrollLock) {
@@ -114,9 +117,10 @@ let Scroller = ({ value = 0, steps, onChange }: ScrollerInterface) => {
     );
 };
 
-Scroller = memo(Scroller);
+const Scroller = memo(ScrollerWithoutMemo);
 
 type FormatString = 'HH' | 'H' | 'mm' | 'm' | 'ss' | 's';
+type TypeString = 'hour' | 'minute' | 'second';
 
 const padZero = (v: string | number) => {
     const s = `00${v}`;
@@ -137,7 +141,8 @@ const StepsMap: Record<FormatString, (string | number)[]> = {
     s,
     ss
 };
-const TypeMap = {
+
+const TypeMap: Record<FormatString, TypeString> = {
     H: 'hour',
     HH: 'hour',
     m: 'minute',

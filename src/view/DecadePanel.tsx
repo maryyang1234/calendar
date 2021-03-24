@@ -1,20 +1,11 @@
-import { Dayjs } from 'dayjs';
 import React, { memo, useCallback, useContext, useMemo } from 'react';
 
 import CalendarContext from '../CalendarContext';
 import classnames from '../util/classnames';
+import { SharedPanelProps } from './interface';
 import TablePanel from './TablePanel';
 
-interface DecadePanelProps {
-    // 选中值
-    value?: Dayjs;
-    // 选中回调
-    onChange: (t: Dayjs) => void;
-    // 当前面板值
-    current: Dayjs;
-    // 面板切换回调
-    onCurrentChange: (t: Dayjs) => void;
-}
+type DecadePanelProps = SharedPanelProps;
 
 const C_COL = 3;
 const C_ROW = 4;
@@ -35,7 +26,7 @@ const DecadePanel = ({ value, onChange, current, onCurrentChange }: DecadePanelP
         for (let i = 0; i < count; i++) {
             const year = baseYear + (i - 1) * 10;
             const latestYear = year + 9;
-            const active = valueYear >= year && valueYear <= latestYear;
+            const active = valueYear !== undefined && valueYear >= year && valueYear <= latestYear;
             const current = i === 0 ? 'prev' : i > 10 ? 'next' : 'current';
             const cellInfo = {
                 children: year + '-' + latestYear,
@@ -56,7 +47,7 @@ const DecadePanel = ({ value, onChange, current, onCurrentChange }: DecadePanelP
             } else if (cellInfo.current === 'next') {
                 onCurrentChange(current.set('year', baseYear + 100));
             } else {
-                onChange?.(current.set('year', cellInfo.year));
+                onChange(current.set('year', cellInfo.year));
             }
         },
         [baseYear, cells, current, onChange, onCurrentChange]

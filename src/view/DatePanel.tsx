@@ -1,22 +1,15 @@
 import dayjs, { Dayjs } from 'dayjs';
 import React, { HTMLAttributes, memo, useCallback, useContext, useMemo } from 'react';
 
-import CalendarContext from '../CalendarContext';
+import CalendarContext, { DefaultContext } from '../CalendarContext';
 import { Override } from '../interface';
 import classnames from '../util/classnames';
+import { SharedPanelProps } from './interface';
 
-interface DateBodyProps {
-    // 选中值
-    value?: Dayjs;
-    // 选中回调
-    onChange?: (t: Dayjs) => void;
-    // 当前面板值
-    current?: Dayjs;
-    // 面板切换回调
-    onCurrentChange?: (t: Dayjs) => void;
+type DateBodyProps = SharedPanelProps & {
     // 今日值
     today?: Dayjs;
-}
+};
 
 const C_COL = 7;
 const C_ROW = 6;
@@ -31,7 +24,7 @@ interface DateInfo {
     active?: boolean;
 }
 
-const getDays = (v: Dayjs, activeV: Dayjs) => {
+const getDays = (v: Dayjs, activeV?: Dayjs) => {
     v = dayjs(v);
     // 月天数
     const daysInMonth = v.daysInMonth();
@@ -65,7 +58,7 @@ const getDays = (v: Dayjs, activeV: Dayjs) => {
     return panelInfo;
 };
 
-let DateCell = ({
+const DateCellWithoutMemo = ({
     day,
     onClick,
     ...rest
@@ -75,13 +68,15 @@ let DateCell = ({
     }, [day, onClick]);
     return <td onClick={onDateClick} {...rest} />;
 };
-DateCell = memo(DateCell);
+const DateCell = memo(DateCellWithoutMemo);
 
-const DateBody = ({ value, current, onChange, onCurrentChange }: DateBodyProps) => {
-    const panelInfo = useMemo(() => getDays(current || value || dayjs(), value), [current, value]);
+const defaultWeekdays = DefaultContext.locale.weekdays;
+
+const DateBody = ({ value, onChange, current, onCurrentChange }: DateBodyProps) => {
+    const panelInfo = useMemo(() => getDays(current, value), [current, value]);
 
     const context = useContext(CalendarContext);
-    const weekdays = context.locale.weekdays;
+    const weekdays = context.locale?.weekdays || defaultWeekdays;
     const cls = useMemo(() => {
         const prefix = context.prefix;
         const datePrefix = context.prefix + '-date';
@@ -101,9 +96,9 @@ const DateBody = ({ value, current, onChange, onCurrentChange }: DateBodyProps) 
     const onDateClick = useCallback(
         (t: DateInfo) => {
             if (t.current === 'current') {
-                onChange?.(t.t);
+                onChange(t.t);
             } else {
-                onCurrentChange?.(t.t);
+                onCurrentChange(t.t);
             }
         },
         [onChange, onCurrentChange]

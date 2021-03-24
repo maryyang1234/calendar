@@ -17,7 +17,7 @@ type ButtonType =
 
 type Mode = HeaderType | 'final';
 
-let HeaderButton = ({
+const HeaderButtonWithoutMemo = ({
     type,
     onClick,
     ...rest
@@ -29,9 +29,9 @@ let HeaderButton = ({
     const cls = useMemo(() => context.prefix + '-header-button', [context.prefix]);
     return <span onClick={clickHandle} className={cls} {...rest} />;
 };
-HeaderButton = memo(HeaderButton);
+const HeaderButton = memo(HeaderButtonWithoutMemo);
 
-let HeaderSwitcher = ({
+const HeaderSwitcherWithoutMemo = ({
     value,
     mode,
     switchMode,
@@ -75,7 +75,7 @@ let HeaderSwitcher = ({
     );
 };
 
-HeaderSwitcher = memo(HeaderSwitcher);
+const HeaderSwitcher = memo(HeaderSwitcherWithoutMemo);
 
 const CalMap: Record<ButtonType, { unit: OpUnitType; count: number }> = {
     prevMonth: { unit: 'month', count: -1 },
@@ -108,7 +108,7 @@ const Header = ({
     );
     const onModeChangeHandle = useCallback(
         (mode: Mode) => {
-            onModeChange(mode);
+            onModeChange?.(mode);
         },
         [onModeChange]
     );

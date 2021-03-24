@@ -11,7 +11,7 @@ let babelOptions = require('./babel.config.json');
 
 const webpackConfig = {
     entry: {
-        rapiop: './src/index.ts'
+        'zr-calendar': './src/index.ts'
     },
     output: {
         path: path.resolve(__dirname, 'build'),

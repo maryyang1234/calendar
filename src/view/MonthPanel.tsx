@@ -1,23 +1,16 @@
-import { Dayjs } from 'dayjs';
 import React, { memo, useCallback, useContext, useMemo } from 'react';
 
-import CalendarContext from '../CalendarContext';
+import CalendarContext, { DefaultContext } from '../CalendarContext';
 import classnames from '../util/classnames';
+import { SharedPanelProps } from './interface';
 import TablePanel from './TablePanel';
 
-interface MonthPanelProps {
-    // 选中值
-    value?: Dayjs;
-    // 选中回调
-    onChange: (t: Dayjs) => void;
-    // 当前面板值
-    current: Dayjs;
-    // 面板切换回调
-    onCurrentChange: (t: Dayjs) => void;
-}
+type MonthPanelProps = Omit<SharedPanelProps, 'onCurrentChange'>;
 
 const C_COL = 3;
 const C_ROW = 4;
+
+const defaultMonths = DefaultContext.locale.months;
 
 const MonthPanel = ({ value, onChange, current }: MonthPanelProps) => {
     const valueMonth = useMemo(() => value?.month(), [value]);
@@ -25,7 +18,7 @@ const MonthPanel = ({ value, onChange, current }: MonthPanelProps) => {
     const currentYear = useMemo(() => current.year(), [current]);
 
     const context = useContext(CalendarContext);
-    const months = context.locale.months;
+    const months = context.locale?.months || defaultMonths;
 
     const cells = useMemo(() => {
         const count = C_COL * C_ROW;
