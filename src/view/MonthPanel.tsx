@@ -1,10 +1,9 @@
 import { Dayjs } from 'dayjs';
 import React, { memo, useCallback, useContext, useMemo } from 'react';
 
-import { Context as CalendarContext } from '../CalendarContext';
-import classnames from '../classnames';
+import CalendarContext from '../CalendarContext';
+import classnames from '../util/classnames';
 import TablePanel from './TablePanel';
-import dayjs from '../dayjs';
 
 interface MonthPanelProps {
     // 选中值
@@ -25,9 +24,9 @@ const MonthPanel = ({ value, onChange, current }: MonthPanelProps) => {
     const valueYear = useMemo(() => value?.year(), [value]);
     const currentYear = useMemo(() => current.year(), [current]);
 
-    const monthLocales = useMemo(() => dayjs().localeData().monthsShort(), []);
-
     const context = useContext(CalendarContext);
+    const months = context.locale.months;
+
     const cells = useMemo(() => {
         const count = C_COL * C_ROW;
         const cells = [];
@@ -37,13 +36,13 @@ const MonthPanel = ({ value, onChange, current }: MonthPanelProps) => {
         for (let i = 0; i < count; i++) {
             const active = sameYear && valueMonth === i;
             const cellInfo = {
-                children: monthLocales[i],
+                children: months[i],
                 className: classnames(active && activeCls)
             };
             cells.push(cellInfo);
         }
         return cells;
-    }, [context.prefix, currentYear, valueYear, valueMonth, monthLocales]);
+    }, [context.prefix, currentYear, valueYear, valueMonth, months]);
 
     const onMonthClick = useCallback(
         (index: number) => {

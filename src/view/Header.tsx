@@ -1,8 +1,8 @@
-import React, { HTMLAttributes, useCallback, useContext, useMemo } from 'react';
+import React, { HTMLAttributes, memo, useCallback, useContext, useMemo } from 'react';
 import { Dayjs, OpUnitType } from 'dayjs';
 
-import { Override } from './interface';
-import { Context as CalendarContext } from './CalendarContext';
+import { Override } from '../interface';
+import CalendarContext from '../CalendarContext';
 
 type HeaderType = 'date' | 'month' | 'year' | 'decade';
 type ButtonType =
@@ -17,7 +17,7 @@ type ButtonType =
 
 type Mode = HeaderType | 'final';
 
-const HeaderButton = ({
+let HeaderButton = ({
     type,
     onClick,
     ...rest
@@ -29,8 +29,9 @@ const HeaderButton = ({
     const cls = useMemo(() => context.prefix + '-header-button', [context.prefix]);
     return <span onClick={clickHandle} className={cls} {...rest} />;
 };
+HeaderButton = memo(HeaderButton);
 
-const HeaderSwitcher = ({
+let HeaderSwitcher = ({
     value,
     mode,
     switchMode,
@@ -73,6 +74,8 @@ const HeaderSwitcher = ({
         </span>
     );
 };
+
+HeaderSwitcher = memo(HeaderSwitcher);
 
 const CalMap: Record<ButtonType, { unit: OpUnitType; count: number }> = {
     prevMonth: { unit: 'month', count: -1 },
@@ -188,4 +191,4 @@ const Header = ({
     }
 };
 
-export default Header;
+export default memo(Header);

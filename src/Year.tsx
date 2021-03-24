@@ -1,28 +1,42 @@
 import React, { memo, useCallback, useMemo, useState } from 'react';
-import dayjs, { Dayjs } from 'dayjs';
+import { Dayjs } from 'dayjs';
 
-import YearPanel from './Panel/YearPanel';
-import Header from './Header';
-import CalendarContext from './CalendarContext';
-import { TDate } from './interface';
-import { standard } from './utils';
+import YearPanel from './view/YearPanel';
+import Header from './view/Header';
 import Decade from './Decade';
-import uncontrolled from './uncontrolled';
+import { TDate } from './interface';
+import standard from './util/standard';
+import useUncontrolled from './useUncontrolled';
+import { withContext } from './CalendarContext';
 
-interface CalendarProps {
+interface YearProps {
     value?: TDate;
+    defaultValue?: TDate;
     onChange?: (v: Dayjs) => void;
     current?: TDate;
+    defaultCurrent?: TDate;
     onCurrentChange?: (v: Dayjs) => void;
 }
 
-const Year = ({ value, onChange, current, onCurrentChange }: CalendarProps) => {
-    const standardCurrent = useMemo(() => standard(current || dayjs()), [current]);
-    const standardValue = useMemo(() => (value ? standard(value) : null), [value]);
+const Year = ({
+    value: _value,
+    defaultValue,
+    onChange: _onChange,
+    current: _current,
+    defaultCurrent,
+    onCurrentChange: _onCurrentChange
+}: YearProps) => {
+    const now = useMemo(() => new Date(), []);
+    const [value, onChange] = useUncontrolled<TDate, Dayjs>(_value, defaultValue, _onChange);
+    const standardValue = useMemo(() => standard(value), [value]);
+    const [current, onCurrentChange] = useUncontrolled<TDate, Dayjs>(
+        _current,
+        defaultCurrent || value || now,
+        _onCurrentChange
+    );
+    const standardCurrent = useMemo(() => standard(current), [current]);
     const [mode, setMode] = useState('year');
-    const onModeChange = useCallback((mode: string) => {
-        setMode(mode);
-    }, []);
+    const onModeChange = useCallback((mode: string) => setMode(mode), []);
     const onDecadeChange = useCallback(
         (current: Dayjs) => {
             onCurrentChange(current);
@@ -36,25 +50,23 @@ const Year = ({ value, onChange, current, onCurrentChange }: CalendarProps) => {
             return <Decade value={standardValue} defaultCurrent={current} onChange={onDecadeChange} />;
         default: {
             return (
-                <CalendarContext.Provider value={{ locale: 'en' }}>
-                    <div>
-                        <Header
-                            value={standardCurrent}
-                            onChange={onCurrentChange}
-                            type="year"
-                            onModeChange={onModeChange}
-                        />
-                        <YearPanel
-                            value={standardValue}
-                            onChange={onChange}
-                            current={standardCurrent}
-                            onCurrentChange={onCurrentChange}
-                        />
-                    </div>
-                </CalendarContext.Provider>
+                <div>
+                    <Header
+                        value={standardCurrent}
+                        onChange={onCurrentChange}
+                        type="year"
+                        onModeChange={onModeChange}
+                    />
+                    <YearPanel
+                        value={standardValue}
+                        onChange={onChange}
+                        current={standardCurrent}
+                        onCurrentChange={onCurrentChange}
+                    />
+                </div>
             );
         }
     }
 };
 
-export default uncontrolled()(uncontrolled({ valueName: 'current', onChangeName: 'onCurrentChange' })(memo(Year)));
+export default withContext<YearProps>(memo(Year));

@@ -102,15 +102,18 @@
         > div {
             height: 1.5em;
             padding: 5em 0;
-            overflow-y: scroll;
-            scroll-snap-type: y mandatory;
+            // scroll-snap-type: y mandatory;
             scroll-behavior: smooth;
+            overflow-y: hidden;
+            &:hover {
+                overflow-y: scroll;
+            }
 
             > div {
                 width: 3em;
                 text-align: center;
                 line-height: 1.5em;
-                scroll-snap-align: center;
+                // scroll-snap-align: center;
                 user-select: none;
                 &.active {
                     font-weight: bold;

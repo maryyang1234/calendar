@@ -1,8 +1,8 @@
 import { Dayjs } from 'dayjs';
 import React, { memo, useCallback, useContext, useMemo } from 'react';
 
-import { Context as CalendarContext } from '../CalendarContext';
-import classnames from '../classnames';
+import CalendarContext from '../CalendarContext';
+import classnames from '../util/classnames';
 import TablePanel from './TablePanel';
 
 interface DecadePanelProps {

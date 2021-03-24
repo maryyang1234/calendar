@@ -1,10 +1,9 @@
-import { Dayjs } from 'dayjs';
+import dayjs, { Dayjs } from 'dayjs';
 import React, { HTMLAttributes, memo, useCallback, useContext, useMemo } from 'react';
 
-import { Context as CalendarContext } from '../CalendarContext';
+import CalendarContext from '../CalendarContext';
 import { Override } from '../interface';
-import classnames from '../classnames';
-import dayjs from '../dayjs';
+import classnames from '../util/classnames';
 
 interface DateBodyProps {
     // 选中值
@@ -79,10 +78,10 @@ let DateCell = ({
 DateCell = memo(DateCell);
 
 const DateBody = ({ value, current, onChange, onCurrentChange }: DateBodyProps) => {
-    const weekdays = useMemo(() => dayjs().localeData().weekdaysShort(), []);
     const panelInfo = useMemo(() => getDays(current || value || dayjs(), value), [current, value]);
 
     const context = useContext(CalendarContext);
+    const weekdays = context.locale.weekdays;
     const cls = useMemo(() => {
         const prefix = context.prefix;
         const datePrefix = context.prefix + '-date';

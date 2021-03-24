@@ -1,8 +1,8 @@
 import React, { HTMLAttributes, memo, ReactNode, useCallback, useContext, useMemo } from 'react';
 
-import { Context as CalendarContext } from '../CalendarContext';
+import CalendarContext from '../CalendarContext';
 import { Override } from '../interface';
-import classnames from '../classnames';
+import classnames from '../util/classnames';
 
 interface PanelProps {
     // prefix

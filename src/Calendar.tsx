@@ -1,32 +1,46 @@
 import React, { memo, useCallback, useMemo, useState } from 'react';
-import { Dayjs } from 'dayjs';
+import dayjs, { Dayjs } from 'dayjs';
 
-import DatePanel from './Panel/DatePanel';
-import Header from './Header';
-import CalendarContext from './CalendarContext';
+import DatePanel from './view/DatePanel';
+import Header from './view/Header';
 import Month from './Month';
-import dayjs from './dayjs';
-import { standard } from './utils';
-import { TDate } from './interface';
-import uncontrolled from './uncontrolled';
 import Year from './Year';
+import standard from './util/standard';
+import { TDate } from './interface';
+import useUncontrolled from './useUncontrolled';
+import { withContext } from './CalendarContext';
 
 interface CalendarProps {
-    value?: TDate;
     today?: TDate;
+    value?: TDate;
+    defaultValue?: TDate;
     onChange?: (v: Dayjs) => void;
     current?: TDate;
+    defaultCurrent?: TDate;
     onCurrentChange?: (v: Dayjs) => void;
 }
 
-const Calendar = ({ value, onChange, today, current, onCurrentChange }: CalendarProps) => {
-    const standardCurrent = useMemo(() => standard(current || dayjs()), [current]);
-    const standardValue = useMemo(() => (value ? standard(value) : null), [value]);
+const Calendar = ({
+    today,
+    value: _value,
+    defaultValue,
+    onChange: _onChange,
+    current: _current,
+    defaultCurrent,
+    onCurrentChange: _onCurrentChange
+}: CalendarProps) => {
+    const now = useMemo(() => new Date(), []);
+    const [value, onChange] = useUncontrolled<TDate, Dayjs>(_value, defaultValue, _onChange);
+    const standardValue = useMemo(() => standard(value), [value]);
+    const [current, onCurrentChange] = useUncontrolled<TDate, Dayjs>(
+        _current,
+        defaultCurrent || value || now,
+        _onCurrentChange
+    );
+    const standardCurrent = useMemo(() => standard(current), [current]);
     const standardToday = useMemo(() => standard(today || dayjs()), [today]);
     const [mode, setMode] = useState('date');
-    const onModeChange = useCallback((mode: string) => {
-        setMode(mode);
-    }, []);
+    const onModeChange = useCallback((mode: string) => setMode(mode), []);
     const onMonthChange = useCallback(
         (current: Dayjs) => {
             onCurrentChange(current);
@@ -49,26 +63,24 @@ const Calendar = ({ value, onChange, today, current, onCurrentChange }: Calendar
             return <Year value={standardValue} defaultCurrent={current} onChange={onYearChange} />;
         default: {
             return (
-                <CalendarContext.Provider value={{ locale: 'en' }}>
-                    <div>
-                        <Header
-                            value={standardCurrent}
-                            onChange={onCurrentChange}
-                            type="date"
-                            onModeChange={onModeChange}
-                        />
-                        <DatePanel
-                            today={standardToday}
-                            value={standardValue}
-                            onChange={onChange}
-                            current={standardCurrent}
-                            onCurrentChange={onCurrentChange}
-                        />
-                    </div>
-                </CalendarContext.Provider>
+                <div>
+                    <Header
+                        value={standardCurrent}
+                        onChange={onCurrentChange}
+                        type="date"
+                        onModeChange={onModeChange}
+                    />
+                    <DatePanel
+                        today={standardToday}
+                        value={standardValue}
+                        onChange={onChange}
+                        current={standardCurrent}
+                        onCurrentChange={onCurrentChange}
+                    />
+                </div>
             );
         }
     }
 };
 
-export default uncontrolled()(uncontrolled({ valueName: 'current', onChangeName: 'onCurrentChange' })(memo(Calendar)));
+export default withContext<CalendarProps>(memo(Calendar));
