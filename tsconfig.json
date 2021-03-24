@@ -18,7 +18,7 @@
         "declaration": true,
         "emitDeclarationOnly": true,
         "baseUrl": "./",
-        "outDir": "./lib"
+        "outDir": "./types"
     },
     "include": ["src/**/*.ts", "src/**/*.tsx"],
     "exclude": ["src/**/*.js", "src/**/*.jsx"]

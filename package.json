@@ -2,14 +2,20 @@
   "name": "@z-r/calendar",
   "version": "0.0.1",
   "description": "A easy to use calendar",
-  "main": "index.js",
+  "main": "lib/index.js",
+  "files": [
+    "lib",
+    "build",
+    "types"
+  ],
+  "typings": "types/index.d.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "bootstrap": "yarn || npm i",
     "start": "webpack serve --config sample/webpack.config.js",
     "build": "rm -rf build/ && NODE_ENV=production webpack",
-    "build:lib": "rm-rf lib/ && babel src/ --extensions '.js,.jsx,.ts,.tsx' -d lib/",
-    "build:ts": "tsc",
+    "build:lib": "rm -rf lib/ && babel src/ --extensions '.js,.jsx,.ts,.tsx' -d lib/",
+    "build:ts": "rm -rf types/ && tsc",
     "build:all": "npm run build && npm run build:lib && npm run build:ts",
     "before-publish": "npm run build:all",
     "publish:patch": "npm run before-publish && npm version patch && npm publish",
