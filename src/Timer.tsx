@@ -2,12 +2,7 @@ import React, { HTMLAttributes, memo, useCallback, useEffect, useMemo, useRef, u
 
 import classnames from './util/classnames';
 import useUncontrolled from './useUncontrolled';
-
-interface ScrollerInterface {
-    value?: number;
-    steps: (number | string)[];
-    onChange?: (v: number) => void;
-}
+import { Override } from './interface';
 
 const StepperWithoutMemo = ({
     index,
@@ -21,7 +16,13 @@ const StepperWithoutMemo = ({
 };
 const Stepper = memo(StepperWithoutMemo);
 
-const ScrollerWithoutMemo = ({ value = 0, steps, onChange }: ScrollerInterface) => {
+interface ScrollerInterface {
+    value?: number;
+    steps: (number | string)[];
+    onChange?: (v: number) => void;
+    prefixCls: string;
+}
+const ScrollerWithoutMemo = ({ value = 0, steps, onChange, prefixCls }: ScrollerInterface) => {
     const [scrollLock, setScrollLock] = useState(true);
     const scroller = useRef<HTMLDivElement>(null);
 
@@ -97,16 +98,26 @@ const ScrollerWithoutMemo = ({ value = 0, steps, onChange }: ScrollerInterface) 
         [updateScroll]
     );
 
+    const cls = useMemo(
+        () => ({
+            wrap: `${prefixCls}-wrap`,
+            scroller: `${prefixCls}-scroller`,
+            stepper: `${prefixCls}-stepper`,
+            active: `${prefixCls}-active`
+        }),
+        [prefixCls]
+    );
+
     return (
-        <div className="zr-timer-container">
-            <div ref={scroller}>
+        <div className={cls.wrap}>
+            <div ref={scroller} className={cls.scroller}>
                 {steps.map((v, i) => {
                     return (
                         <Stepper
                             key={v}
                             index={i}
                             onStepperClick={onStepperClick}
-                            className={classnames(value === i ? 'active' : '')}
+                            className={classnames(cls.stepper, value === i && cls.active)}
                         >
                             {v}
                         </Stepper>
@@ -155,13 +166,25 @@ const Timer = ({
     value: _value,
     defaultValue = new Date(),
     onChange: _onChange,
-    mode = ['HH', 'mm', 'ss']
-}: {
-    value?: Date;
-    defaultValue?: Date;
-    onChange?: (d: Date) => void;
-    mode?: ('HH' | 'H' | 'mm' | 'm' | 'ss' | 's')[];
-}) => {
+    mode = ['HH', 'mm', 'ss'],
+    prefixCls = 'zr-timer',
+    className,
+    ...rest
+}: Override<
+    HTMLAttributes<HTMLDivElement>,
+    {
+        // controlled value
+        value?: Date;
+        // uncontrolled default value
+        defaultValue?: Date;
+        // callback when user change
+        onChange?: (d: Date) => void;
+        // change display of timer
+        mode?: ('HH' | 'H' | 'mm' | 'm' | 'ss' | 's')[];
+        // custom prefix className
+        prefixCls?: string;
+    }
+>) => {
     const [value, onChange] = useUncontrolled(_value, defaultValue, _onChange);
     const stepsArray = useMemo(() => mode.map(v => StepsMap[v]), [mode]);
     const valueArray = useMemo(() => {
@@ -173,36 +196,50 @@ const Timer = ({
         return mode.map(v => valueMap[TypeMap[v]]);
     }, [value, mode]);
 
+    // use ref to reduce reRender
+    const valueRef = useRef(value);
+    useEffect(() => {
+        valueRef.current = value;
+    }, [value]);
+
     const onHourChange = useCallback(
         (hour: number) => {
-            const date = new Date(value);
+            const date = new Date(valueRef.current);
             onChange(new Date(date.setHours(hour)));
         },
-        [onChange, value]
+        [onChange]
     );
     const onMinuteChange = useCallback(
         (hour: number) => {
-            const date = new Date(value);
+            const date = new Date(valueRef.current);
             onChange(new Date(date.setMinutes(hour)));
         },
-        [onChange, value]
+        [onChange]
     );
     const onSecondChange = useCallback(
         (hour: number) => {
-            const date = new Date(value);
+            const date = new Date(valueRef.current);
             onChange(new Date(date.setSeconds(hour)));
         },
-        [onChange, value]
+        [onChange]
     );
 
     const callbackMap = { hour: onHourChange, minute: onMinuteChange, second: onSecondChange };
 
     return (
-        <div className="zr-timer-timer">
+        <div className={classnames(prefixCls, className)} {...rest}>
             {mode.map((mode, i) => {
                 const steps = stepsArray[i];
                 const value = valueArray[i];
-                return <Scroller key={i} value={value} onChange={callbackMap[TypeMap[mode]]} steps={steps} />;
+                return (
+                    <Scroller
+                        key={i}
+                        value={value}
+                        onChange={callbackMap[TypeMap[mode]]}
+                        steps={steps}
+                        prefixCls={prefixCls}
+                    />
+                );
             })}
         </div>
     );

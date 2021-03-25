@@ -26,7 +26,10 @@ const HeaderButtonWithoutMemo = ({
         onClick(type);
     }, [onClick, type]);
     const context = useContext(CalendarContext);
-    const cls = useMemo(() => context.prefix + '-header-button', [context.prefix]);
+    const cls = useMemo(() => {
+        const prefixCls = context.prefixCls;
+        return `${prefixCls}-header-button ${prefixCls}-header-button-${type}`;
+    }, [context.prefixCls, type]);
     return <span onClick={clickHandle} className={cls} {...rest} />;
 };
 const HeaderButton = memo(HeaderButtonWithoutMemo);
@@ -67,7 +70,10 @@ const HeaderSwitcherWithoutMemo = ({
         switchMode(mode);
     }, [mode, switchMode]);
     const context = useContext(CalendarContext);
-    const cls = useMemo(() => context.prefix + '-header-switcher', [context.prefix]);
+    const cls = useMemo(() => {
+        const prefixCls = context.prefixCls;
+        return `${prefixCls}-header-switcher ${prefixCls}-header-switcher-${mode}`;
+    }, [context.prefixCls, mode]);
     return (
         <span onClick={onClick} className={cls} {...rest}>
             {display}
@@ -115,12 +121,12 @@ const Header = ({
 
     const context = useContext(CalendarContext);
     const cls = useMemo(() => {
-        const headerPrefix = context.prefix + '-header';
+        const headerPrefix = context.prefixCls + '-header';
         return {
-            header: headerPrefix,
+            header: `${headerPrefix} ${headerPrefix}-${type}`,
             switcherWrap: headerPrefix + '-switcher-wrap'
         };
-    }, [context.prefix]);
+    }, [context.prefixCls, type]);
 
     switch (type) {
         case 'date':

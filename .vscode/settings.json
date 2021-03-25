@@ -3,6 +3,7 @@
         "Parens",
         "Scroller",
         "YYYYMMDD",
-        "corejs"
+        "corejs",
+        "theader"
     ]
 }

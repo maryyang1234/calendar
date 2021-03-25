@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useMemo, useState } from 'react';
+import React, { memo, useCallback, useContext, useMemo, useState } from 'react';
 import { Dayjs } from 'dayjs';
 
 import YearPanel from './view/YearPanel';
@@ -7,7 +7,8 @@ import Decade from './Decade';
 import standard from './util/standard';
 import { SharedCalendarProps, TDate } from './interface';
 import useUncontrolled from './useUncontrolled';
-import { withContext } from './CalendarContext';
+import CalendarContext, { withContext } from './CalendarContext';
+import classnames from './util/classnames';
 
 type YearProps = SharedCalendarProps;
 
@@ -17,7 +18,9 @@ const Year = ({
     onChange: _onChange,
     current: _current,
     defaultCurrent,
-    onCurrentChange: _onCurrentChange
+    onCurrentChange: _onCurrentChange,
+    className,
+    ...rest
 }: YearProps) => {
     const now = useMemo(() => new Date(), []);
     const [value, onChange] = useUncontrolled<TDate | null, Dayjs>(_value, defaultValue, _onChange);
@@ -37,13 +40,22 @@ const Year = ({
         },
         [onCurrentChange]
     );
+    const context = useContext(CalendarContext);
+    const cls = useMemo(() => {
+        const prefixCls = context.prefixCls;
+        return {
+            wrap: prefixCls,
+            year: prefixCls + '-year',
+            yearWrap: prefixCls + '-year-wrap'
+        };
+    }, [context.prefixCls]);
 
-    switch (mode) {
-        case 'decade':
-            return <Decade value={standardValue} defaultCurrent={current} onChange={onDecadeChange} />;
-        default: {
-            return (
-                <div>
+    return (
+        <div {...rest} className={classnames(cls.wrap, cls.year, className)}>
+            {mode === 'decade' ? (
+                <Decade value={standardValue} defaultCurrent={current} onChange={onDecadeChange} />
+            ) : (
+                <div className={cls.yearWrap}>
                     <Header
                         value={standardCurrent}
                         onChange={onCurrentChange}
@@ -57,9 +69,9 @@ const Year = ({
                         onCurrentChange={onCurrentChange}
                     />
                 </div>
-            );
-        }
-    }
+            )}
+        </div>
+    );
 };
 
 export default withContext<YearProps>(memo(Year));

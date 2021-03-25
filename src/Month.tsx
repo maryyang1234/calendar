@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useMemo, useState } from 'react';
+import React, { memo, useCallback, useContext, useMemo, useState } from 'react';
 import { Dayjs } from 'dayjs';
 
 import MonthPanel from './view/MonthPanel';
@@ -7,7 +7,8 @@ import Year from './Year';
 import standard from './util/standard';
 import { SharedCalendarProps, TDate } from './interface';
 import useUncontrolled from './useUncontrolled';
-import { withContext } from './CalendarContext';
+import CalendarContext, { withContext } from './CalendarContext';
+import classnames from './util/classnames';
 
 type MonthProps = SharedCalendarProps;
 
@@ -17,7 +18,9 @@ const Month = ({
     onChange: _onChange,
     current: _current,
     defaultCurrent,
-    onCurrentChange: _onCurrentChange
+    onCurrentChange: _onCurrentChange,
+    className,
+    ...rest
 }: MonthProps) => {
     const now = useMemo(() => new Date(), []);
     const [value, onChange] = useUncontrolled<TDate | null, Dayjs>(_value, defaultValue, _onChange);
@@ -39,13 +42,22 @@ const Month = ({
         },
         [onCurrentChange]
     );
+    const context = useContext(CalendarContext);
+    const cls = useMemo(() => {
+        const prefixCls = context.prefixCls;
+        return {
+            wrap: prefixCls,
+            month: prefixCls + '-month',
+            monthWrap: prefixCls + '-month-wrap'
+        };
+    }, [context.prefixCls]);
 
-    switch (mode) {
-        case 'year':
-            return <Year value={standardValue} defaultCurrent={current} onChange={onYearChange} />;
-        default: {
-            return (
-                <div>
+    return (
+        <div {...rest} className={classnames(cls.wrap, cls.month, className)}>
+            {mode === 'year' ? (
+                <Year value={standardValue} defaultCurrent={current} onChange={onYearChange} />
+            ) : (
+                <div className={cls.monthWrap}>
                     <Header
                         value={standardCurrent}
                         onChange={onCurrentChange}
@@ -58,9 +70,9 @@ const Month = ({
                         current={standardCurrent}
                     />
                 </div>
-            );
-        }
-    }
+            )}
+        </div>
+    );
 };
 
 export default withContext<MonthProps>(memo(Month));

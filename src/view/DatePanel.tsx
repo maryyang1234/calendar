@@ -78,20 +78,20 @@ const DateBody = ({ value, onChange, current, onCurrentChange }: DateBodyProps) 
     const context = useContext(CalendarContext);
     const weekdays = context.locale?.weekdays || defaultWeekdays;
     const cls = useMemo(() => {
-        const prefix = context.prefix;
-        const datePrefix = context.prefix + '-date';
+        const prefixCls = context.prefixCls;
+        const datePrefixCls = context.prefixCls + '-date';
         return {
-            table: datePrefix + '-table',
-            header: datePrefix + '-header',
-            body: datePrefix + '-body',
-            row: datePrefix + '-row',
-            cell: datePrefix + '-cell',
-            content: datePrefix + '-content',
-            active: prefix + '-active',
-            prev: prefix + '-prev',
-            next: prefix + '-next'
+            table: datePrefixCls + '-table',
+            thead: datePrefixCls + '-thead',
+            tbody: datePrefixCls + '-tbody',
+            row: datePrefixCls + '-row',
+            cell: datePrefixCls + '-cell',
+            content: datePrefixCls + '-content',
+            active: prefixCls + '-active',
+            prev: prefixCls + '-prev',
+            next: prefixCls + '-next'
         };
-    }, [context.prefix]);
+    }, [context.prefixCls]);
 
     const onDateClick = useCallback(
         (t: DateInfo) => {
@@ -106,7 +106,7 @@ const DateBody = ({ value, onChange, current, onCurrentChange }: DateBodyProps) 
 
     return (
         <table className={cls.table}>
-            <thead className={cls.header}>
+            <thead className={cls.thead}>
                 <tr className={cls.row}>
                     {weekdays.map((v, i) => (
                         <th key={i} className={cls.cell}>
@@ -115,7 +115,7 @@ const DateBody = ({ value, onChange, current, onCurrentChange }: DateBodyProps) 
                     ))}
                 </tr>
             </thead>
-            <tbody className={cls.body}>
+            <tbody className={cls.tbody}>
                 {panelInfo.map((week, i) => {
                     return (
                         <tr key={i} className={cls.row}>

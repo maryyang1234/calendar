@@ -19,10 +19,10 @@ const DecadePanel = ({ value, onChange, current, onCurrentChange }: DecadePanelP
     const cells = useMemo(() => {
         const count = C_COL * C_ROW;
         const cells = [];
-        const prefix = context.prefix;
-        const activeCls = prefix + '-active';
-        const prevCls = prefix + '-prev';
-        const nextCls = prefix + '-next';
+        const prefixCls = context.prefixCls;
+        const activeCls = prefixCls + '-active';
+        const prevCls = prefixCls + '-prev';
+        const nextCls = prefixCls + '-next';
         for (let i = 0; i < count; i++) {
             const year = baseYear + (i - 1) * 10;
             const latestYear = year + 9;
@@ -37,7 +37,7 @@ const DecadePanel = ({ value, onChange, current, onCurrentChange }: DecadePanelP
             cells.push(cellInfo);
         }
         return cells;
-    }, [baseYear, valueYear, context.prefix]);
+    }, [baseYear, valueYear, context.prefixCls]);
 
     const onYearClick = useCallback(
         (index: number) => {

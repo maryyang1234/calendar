@@ -23,8 +23,8 @@ const MonthPanel = ({ value, onChange, current }: MonthPanelProps) => {
     const cells = useMemo(() => {
         const count = C_COL * C_ROW;
         const cells = [];
-        const prefix = context.prefix;
-        const activeCls = prefix + '-active';
+        const prefixCls = context.prefixCls;
+        const activeCls = prefixCls + '-active';
         const sameYear = currentYear === valueYear;
         for (let i = 0; i < count; i++) {
             const active = sameYear && valueMonth === i;
@@ -35,7 +35,7 @@ const MonthPanel = ({ value, onChange, current }: MonthPanelProps) => {
             cells.push(cellInfo);
         }
         return cells;
-    }, [context.prefix, currentYear, valueYear, valueMonth, months]);
+    }, [context.prefixCls, currentYear, valueYear, valueMonth, months]);
 
     const onMonthClick = useCallback(
         (index: number) => {

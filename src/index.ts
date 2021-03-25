@@ -1,4 +1,6 @@
-export { default as Calendar } from './Calendar';
+import Calendar from './Calendar';
+export { Calendar };
+export default Calendar;
 
 export { default as Month } from './Month';
 

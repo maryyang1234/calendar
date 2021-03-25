@@ -19,10 +19,10 @@ const YearPanel = ({ value, onChange, current, onCurrentChange }: YearPanelProps
     const cells = useMemo(() => {
         const count = C_COL * C_ROW;
         const cells = [];
-        const prefix = context.prefix;
-        const activeCls = prefix + '-active';
-        const prevCls = prefix + '-prev';
-        const nextCls = prefix + '-next';
+        const prefixCls = context.prefixCls;
+        const activeCls = prefixCls + '-active';
+        const prevCls = prefixCls + '-prev';
+        const nextCls = prefixCls + '-next';
         for (let i = 0; i < count; i++) {
             const year = baseYear + i - 1;
             const active = valueYear === year;
@@ -35,7 +35,7 @@ const YearPanel = ({ value, onChange, current, onCurrentChange }: YearPanelProps
             cells.push(cellInfo);
         }
         return cells;
-    }, [baseYear, valueYear, context.prefix]);
+    }, [baseYear, valueYear, context.prefixCls]);
 
     const onYearClick = useCallback(
         (index: number) => {

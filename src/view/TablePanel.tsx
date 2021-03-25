@@ -40,15 +40,15 @@ const Cell = memo(CellWithoutMemo);
 const CellPanel = ({ onCellClick, cells, mode }: PanelProps) => {
     const context = useContext(CalendarContext);
     const cls = useMemo(() => {
-        const panelPrefix = context.prefix + '-' + mode;
+        const panelPrefixCls = context.prefixCls + '-' + mode;
         return {
-            table: panelPrefix + '-table',
-            body: panelPrefix + '-body',
-            row: panelPrefix + '-row',
-            cell: panelPrefix + '-cell',
-            content: panelPrefix + '-content'
+            table: panelPrefixCls + '-table',
+            tbody: panelPrefixCls + '-tbody',
+            row: panelPrefixCls + '-row',
+            cell: panelPrefixCls + '-cell',
+            content: panelPrefixCls + '-content'
         };
-    }, [context.prefix, mode]);
+    }, [context.prefixCls, mode]);
 
     const onClick = useCallback(
         (index: number) => {
@@ -86,7 +86,7 @@ const CellPanel = ({ onCellClick, cells, mode }: PanelProps) => {
 
     return (
         <table className={cls.table}>
-            <tbody className={cls.body}>{renderBody()}</tbody>
+            <tbody className={cls.tbody}>{renderBody()}</tbody>
         </table>
     );
 };

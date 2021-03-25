@@ -80,9 +80,9 @@
 .zr-cal {
     color: #0a1633;
 }
-.zr-timer-timer {
+.zr-timer {
     display: flex;
-    .zr-timer-container {
+    .zr-timer-wrap {
         overflow: hidden;
         display: flex;
         border: 1px solid #ccc;
@@ -99,7 +99,7 @@
             border-width: 1px 0;
             pointer-events: none;
         }
-        > div {
+        .zr-timer-scroller {
             height: 1.5em;
             padding: 5em 0;
             // scroll-snap-type: y mandatory;
@@ -109,13 +109,13 @@
                 overflow-y: scroll;
             }
 
-            > div {
+            .zr-timer-stepper {
                 width: 3em;
                 text-align: center;
                 line-height: 1.5em;
                 // scroll-snap-align: center;
                 user-select: none;
-                &.active {
+                &.zr-timer-active {
                     font-weight: bold;
                 }
             }

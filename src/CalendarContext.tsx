@@ -10,7 +10,7 @@ import { months, weekdays } from './locale/en_us';
 
 export interface Context {
     locale?: { months: string[]; weekdays: string[] };
-    prefix?: string;
+    prefixCls?: string;
     // components?: CalendarComponents;
 }
 
@@ -19,7 +19,7 @@ export const DefaultContext: Required<Context> = {
         months,
         weekdays
     },
-    prefix: 'zr-cal'
+    prefixCls: 'zr-cal'
 };
 
 export type ContextKeys = keyof Context;
