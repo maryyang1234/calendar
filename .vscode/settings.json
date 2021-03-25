@@ -4,6 +4,7 @@
         "Scroller",
         "YYYYMMDD",
         "corejs",
+        "flowtype",
         "theader"
     ]
 }
