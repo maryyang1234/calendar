@@ -1,4 +1,4 @@
-import React, { ComponentType, createContext, memo, useMemo } from 'react';
+import React, { ComponentType, createContext, memo, useContext, useMemo } from 'react';
 
 import { months, weekdays } from './locale/en_us';
 
@@ -43,7 +43,11 @@ export const pickContext = <T extends Context>(obj: T): [Context, T] => {
 export const withContext = <T,>(Component: ComponentType<T>) => {
     const ComponentWithContext = (props: T & Context) => {
         const [context, rest] = pickContext<T & Context>(props);
-        const finalContext = useMemo(() => ({ ...DefaultContext, ...context }), [context]);
+        const inheritContext = useContext(CalendarContext);
+        const finalContext = useMemo(() => ({ ...DefaultContext, ...inheritContext, ...context }), [
+            context,
+            inheritContext
+        ]);
         return (
             <CalendarContext.Provider value={finalContext}>
                 <Component {...rest} />
