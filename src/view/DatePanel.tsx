@@ -66,7 +66,7 @@ const DateCellWithoutMemo = ({
     const onDateClick = useCallback(() => {
         onClick(day);
     }, [day, onClick]);
-    return <td onClick={onDateClick} {...rest} />;
+    return <div onClick={onDateClick} {...rest} />;
 };
 const DateCell = memo(DateCellWithoutMemo);
 
@@ -79,14 +79,13 @@ const DateBody = ({ value, onChange, current, onCurrentChange }: DateBodyProps) 
     const weekdays = context.locale?.weekdays || defaultWeekdays;
     const cls = useMemo(() => {
         const prefixCls = context.prefixCls;
-        const datePrefixCls = context.prefixCls + '-date';
         return {
-            table: datePrefixCls + '-table',
-            thead: datePrefixCls + '-thead',
-            tbody: datePrefixCls + '-tbody',
-            row: datePrefixCls + '-row',
-            cell: datePrefixCls + '-cell',
-            content: datePrefixCls + '-content',
+            table: prefixCls + '-table',
+            head: prefixCls + '-thead',
+            body: prefixCls + '-tbody',
+            row: prefixCls + '-row',
+            cell: prefixCls + '-cell',
+            content: prefixCls + '-content',
             active: prefixCls + '-active',
             prev: prefixCls + '-prev',
             next: prefixCls + '-next'
@@ -105,20 +104,20 @@ const DateBody = ({ value, onChange, current, onCurrentChange }: DateBodyProps) 
     );
 
     return (
-        <table className={cls.table}>
-            <thead className={cls.thead}>
-                <tr className={cls.row}>
+        <div className={cls.table}>
+            <div className={cls.head}>
+                <div className={cls.row}>
                     {weekdays.map((v, i) => (
-                        <th key={i} className={cls.cell}>
+                        <div key={i} className={cls.cell}>
                             {v}
-                        </th>
+                        </div>
                     ))}
-                </tr>
-            </thead>
-            <tbody className={cls.tbody}>
+                </div>
+            </div>
+            <div className={cls.body}>
                 {panelInfo.map((week, i) => {
                     return (
-                        <tr key={i} className={cls.row}>
+                        <div key={i} className={cls.row}>
                             {week.map(day => {
                                 return (
                                     <DateCell
@@ -136,11 +135,11 @@ const DateBody = ({ value, onChange, current, onCurrentChange }: DateBodyProps) 
                                     </DateCell>
                                 );
                             })}
-                        </tr>
+                        </div>
                     );
                 })}
-            </tbody>
-        </table>
+            </div>
+        </div>
     );
 };
 

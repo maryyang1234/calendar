@@ -1,58 +1,3 @@
-.zr-cal-date-cell,
-.zr-cal-month-cell,
-.zr-cal-year-cell,
-.zr-cal-decade-cell {
-    text-align: center;
-    padding: 0.25em 0.5em;
-    &.zr-cal-active {
-        .zr-cal-date-content,
-        .zr-cal-month-content,
-        .zr-cal-year-content,
-        .zr-cal-decade-content {
-            background: #3860f4;
-            color: white;
-        }
-    }
-    &.zr-cal-prev,
-    &.zr-cal-next {
-        color: #cccccc;
-        &.zr-cal-active {
-            .zr-cal-date-content,
-            .zr-cal-month-content,
-            .zr-cal-year-content,
-            .zr-cal-decade-content {
-                background: #d2d6ea;
-            }
-        }
-    }
-}
-
-.zr-cal-date-content,
-.zr-cal-month-content,
-.zr-cal-year-content,
-.zr-cal-decade-content {
-    display: inline-block;
-}
-.zr-cal-date-content {
-    width: 4em;
-}
-.zr-cal-month-content {
-    width: 5em;
-}
-.zr-cal-year-content {
-    width: 6em;
-}
-.zr-cal-decade-content {
-    width: 12em;
-}
-
-.zr-cal-date-body .zr-cal-date-cell,
-.zr-cal-month-body .zr-cal-month-cell,
-.zr-cal-year-body .zr-cal-year-cell,
-.zr-cal-decade-body .zr-cal-decade-cell {
-    cursor: pointer;
-}
-
 .zr-cal-header {
     display: flex;
     .zr-cal-header-button {
@@ -70,16 +15,53 @@
     }
 }
 
-.zr-cal-date-table,
-.zr-cal-month-table,
-.zr-cal-year-table,
-.zr-cal-decade-table {
-    width: 100%;
-}
-
 .zr-cal {
     color: #0a1633;
 }
+.zr-cal-table {
+    width: 100%;
+}
+.zr-cal-row {
+    display: flex;
+}
+.zr-cal-cell {
+    flex: 1;
+    text-align: center;
+    cursor: pointer;
+    .zr-cal-content {
+        padding: 0.25em 0.5em;
+        display: inline-block;
+        user-select: none;
+    }
+    &.zr-cal-active {
+        .zr-cal-content {
+            background: #3860f4;
+            color: white;
+        }
+    }
+    &.zr-cal-prev,
+    &.zr-cal-next {
+        color: #cccccc;
+        &.zr-cal-active {
+            .zr-cal-content {
+                background: #d2d6ea;
+            }
+        }
+    }
+}
+.zr-cal-date-wrap .zr-cal-content {
+    width: 4em;
+}
+.zr-cal-month-wrap .zr-cal-content {
+    width: 5em;
+}
+.zr-cal-year-wrap .zr-cal-content {
+    width: 6em;
+}
+.zr-cal-decade-wrap .zr-cal-content {
+    width: 12em;
+}
+
 .zr-timer {
     display: flex;
     .zr-timer-wrap {

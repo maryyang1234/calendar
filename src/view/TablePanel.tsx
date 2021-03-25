@@ -33,22 +33,22 @@ const CellWithoutMemo = ({
     const onCellClick = useCallback(() => {
         onClick(index);
     }, [onClick, index]);
-    return <td onClick={onCellClick} {...rest} />;
+    return <div onClick={onCellClick} {...rest} />;
 };
 const Cell = memo(CellWithoutMemo);
 
-const CellPanel = ({ onCellClick, cells, mode }: PanelProps) => {
+const CellPanel = ({ onCellClick, cells }: PanelProps) => {
     const context = useContext(CalendarContext);
     const cls = useMemo(() => {
-        const panelPrefixCls = context.prefixCls + '-' + mode;
+        const prefixCls = context.prefixCls;
         return {
-            table: panelPrefixCls + '-table',
-            tbody: panelPrefixCls + '-tbody',
-            row: panelPrefixCls + '-row',
-            cell: panelPrefixCls + '-cell',
-            content: panelPrefixCls + '-content'
+            table: prefixCls + '-table',
+            body: prefixCls + '-body',
+            row: prefixCls + '-row',
+            cell: prefixCls + '-cell',
+            content: prefixCls + '-content'
         };
-    }, [context.prefixCls, mode]);
+    }, [context.prefixCls]);
 
     const onClick = useCallback(
         (index: number) => {
@@ -76,18 +76,18 @@ const CellPanel = ({ onCellClick, cells, mode }: PanelProps) => {
                 );
             }
             info.push(
-                <tr key={i} className={cls.row}>
+                <div key={i} className={cls.row}>
                     {group}
-                </tr>
+                </div>
             );
         }
         return info;
     };
 
     return (
-        <table className={cls.table}>
-            <tbody className={cls.tbody}>{renderBody()}</tbody>
-        </table>
+        <div className={cls.table}>
+            <div className={cls.body}>{renderBody()}</div>
+        </div>
     );
 };
 
