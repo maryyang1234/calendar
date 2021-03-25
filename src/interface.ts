@@ -1,4 +1,4 @@
-import { HTMLAttributes } from 'react';
+import { HTMLAttributes, ReactNode } from 'react';
 import { Dayjs } from 'dayjs';
 import { Moment } from 'moment';
 
@@ -21,5 +21,7 @@ export type SharedCalendarProps = Override<
         defaultCurrent?: TDate;
         // callback when current display panel change
         onCurrentChange?: (v: Dayjs) => void;
+        // render sidebar right to the table
+        sidebar?: ReactNode;
     }
 >;

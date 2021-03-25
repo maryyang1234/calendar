@@ -19,6 +19,7 @@ const Month = ({
     current: _current,
     defaultCurrent,
     onCurrentChange: _onCurrentChange,
+    sidebar,
     className,
     ...rest
 }: MonthProps) => {
@@ -48,7 +49,8 @@ const Month = ({
         return {
             wrap: prefixCls,
             month: prefixCls + '-month',
-            monthWrap: prefixCls + '-month-wrap'
+            monthWrap: prefixCls + '-month-wrap',
+            body: prefixCls + '-body'
         };
     }, [context.prefixCls]);
 
@@ -64,11 +66,14 @@ const Month = ({
                         type="month"
                         onModeChange={onModeChange}
                     />
-                    <MonthPanel
-                        value={standardValue === null ? undefined : standardValue}
-                        onChange={onChange}
-                        current={standardCurrent}
-                    />
+                    <div className={cls.body}>
+                        <MonthPanel
+                            value={standardValue === null ? undefined : standardValue}
+                            onChange={onChange}
+                            current={standardCurrent}
+                        />
+                        {sidebar}
+                    </div>
                 </div>
             )}
         </div>

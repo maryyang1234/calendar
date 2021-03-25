@@ -43,7 +43,7 @@ const CellPanel = ({ onCellClick, cells }: PanelProps) => {
         const prefixCls = context.prefixCls;
         return {
             table: prefixCls + '-table',
-            body: prefixCls + '-body',
+            body: prefixCls + '-tbody',
             row: prefixCls + '-row',
             cell: prefixCls + '-cell',
             content: prefixCls + '-content'

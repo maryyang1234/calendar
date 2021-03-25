@@ -24,6 +24,7 @@ const Calendar = ({
     current: _current,
     defaultCurrent,
     onCurrentChange: _onCurrentChange,
+    sidebar,
     className,
     ...rest
 }: CalendarProps) => {
@@ -59,16 +60,17 @@ const Calendar = ({
         return {
             wrap: prefixCls,
             date: prefixCls + '-date',
-            dateWrap: prefixCls + '-date-wrap'
+            dateWrap: prefixCls + '-date-wrap',
+            body: prefixCls + '-body'
         };
     }, [context.prefixCls]);
 
     return (
         <div {...rest} className={classnames(cls.wrap, cls.date, className)}>
             {mode === 'month' ? (
-                <Month value={standardValue} defaultCurrent={current} onChange={onMonthChange} />
+                <Month value={standardValue} defaultCurrent={current} onChange={onMonthChange} sidebar={sidebar} />
             ) : mode === 'year' ? (
-                <Year value={standardValue} defaultCurrent={current} onChange={onYearChange} />
+                <Year value={standardValue} defaultCurrent={current} onChange={onYearChange} sidebar={sidebar} />
             ) : (
                 <div className={cls.dateWrap}>
                     <Header
@@ -77,13 +79,16 @@ const Calendar = ({
                         type="date"
                         onModeChange={onModeChange}
                     />
-                    <DatePanel
-                        today={standardToday}
-                        value={standardValue === null ? undefined : standardValue}
-                        onChange={onChange}
-                        current={standardCurrent}
-                        onCurrentChange={onCurrentChange}
-                    />
+                    <div className={cls.body}>
+                        <DatePanel
+                            today={standardToday}
+                            value={standardValue === null ? undefined : standardValue}
+                            onChange={onChange}
+                            current={standardCurrent}
+                            onCurrentChange={onCurrentChange}
+                        />
+                        {sidebar}
+                    </div>
                 </div>
             )}
         </div>

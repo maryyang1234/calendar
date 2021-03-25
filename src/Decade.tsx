@@ -18,6 +18,7 @@ const Decade = ({
     current: _current,
     defaultCurrent,
     onCurrentChange: _onCurrentChange,
+    sidebar,
     className,
     ...rest
 }: DecadeProps) => {
@@ -36,7 +37,8 @@ const Decade = ({
         return {
             wrap: prefixCls,
             decade: prefixCls + '-decade',
-            decadeWrap: prefixCls + '-decade-wrap'
+            decadeWrap: prefixCls + '-decade-wrap',
+            body: prefixCls + '-body'
         };
     }, [context.prefixCls]);
 
@@ -44,12 +46,15 @@ const Decade = ({
         <div {...rest} className={classnames(cls.wrap, cls.decade, className)}>
             <div className={cls.decadeWrap}>
                 <Header value={standardCurrent} onChange={onCurrentChange} type="decade" />
-                <DecadePanel
-                    value={standardValue === null ? undefined : standardValue}
-                    onChange={onChange}
-                    current={standardCurrent}
-                    onCurrentChange={onCurrentChange}
-                />
+                <div className={cls.body}>
+                    <DecadePanel
+                        value={standardValue === null ? undefined : standardValue}
+                        onChange={onChange}
+                        current={standardCurrent}
+                        onCurrentChange={onCurrentChange}
+                    />
+                    {sidebar}
+                </div>
             </div>
         </div>
     );

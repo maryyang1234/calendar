@@ -19,6 +19,7 @@ const Year = ({
     current: _current,
     defaultCurrent,
     onCurrentChange: _onCurrentChange,
+    sidebar,
     className,
     ...rest
 }: YearProps) => {
@@ -46,7 +47,8 @@ const Year = ({
         return {
             wrap: prefixCls,
             year: prefixCls + '-year',
-            yearWrap: prefixCls + '-year-wrap'
+            yearWrap: prefixCls + '-year-wrap',
+            body: prefixCls + '-body'
         };
     }, [context.prefixCls]);
 
@@ -62,12 +64,15 @@ const Year = ({
                         type="year"
                         onModeChange={onModeChange}
                     />
-                    <YearPanel
-                        value={standardValue === null ? undefined : standardValue}
-                        onChange={onChange}
-                        current={standardCurrent}
-                        onCurrentChange={onCurrentChange}
-                    />
+                    <div className={cls.body}>
+                        <YearPanel
+                            value={standardValue === null ? undefined : standardValue}
+                            onChange={onChange}
+                            current={standardCurrent}
+                            onCurrentChange={onCurrentChange}
+                        />
+                        {sidebar}
+                    </div>
                 </div>
             )}
         </div>
