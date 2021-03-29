@@ -63,7 +63,7 @@ const Month = ({
                     <Header
                         value={standardCurrent}
                         onChange={onCurrentChange}
-                        type="month"
+                        mode="month"
                         onModeChange={onModeChange}
                     />
                     <div className={cls.body}>

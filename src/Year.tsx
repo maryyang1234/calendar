@@ -61,7 +61,7 @@ const Year = ({
                     <Header
                         value={standardCurrent}
                         onChange={onCurrentChange}
-                        type="year"
+                        mode="year"
                         onModeChange={onModeChange}
                     />
                     <div className={cls.body}>

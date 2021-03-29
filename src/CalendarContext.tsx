@@ -1,17 +1,12 @@
-import React, { ComponentType, createContext, memo, useContext, useMemo } from 'react';
+import React, { ComponentType, createContext, HTMLAttributes, memo, useContext, useMemo } from 'react';
 
+import { CalendarComponents } from './interface';
 import { months, weekdays } from './locale/en_us';
-
-// interface CalendarComponents {
-//     DateCell: React.ComponentType;
-//     Header: React.ComponentType;
-//     HeaderButton: React.ComponentType;
-// }
 
 export interface Context {
     locale?: { months: string[]; weekdays: string[] };
     prefixCls?: string;
-    // components?: CalendarComponents;
+    components?: CalendarComponents;
 }
 
 export const DefaultContext: Required<Context> = {
@@ -19,7 +14,8 @@ export const DefaultContext: Required<Context> = {
         months,
         weekdays
     },
-    prefixCls: 'zr-cal'
+    prefixCls: 'zr-cal',
+    components: {}
 };
 
 export type ContextKeys = keyof Context;

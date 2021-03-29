@@ -3,7 +3,7 @@ import React, { memo, useCallback, useContext, useMemo } from 'react';
 import CalendarContext, { DefaultContext } from '../CalendarContext';
 import classnames from '../util/classnames';
 import { SharedPanelProps } from './interface';
-import TablePanel from './TablePanel';
+import TBody from './TBody';
 
 type MonthPanelProps = Omit<SharedPanelProps, 'onCurrentChange'>;
 
@@ -16,14 +16,12 @@ const MonthPanel = ({ value, onChange, current }: MonthPanelProps) => {
     const valueMonth = useMemo(() => value?.month(), [value]);
     const valueYear = useMemo(() => value?.year(), [value]);
     const currentYear = useMemo(() => current.year(), [current]);
-
-    const context = useContext(CalendarContext);
-    const months = context.locale?.months || defaultMonths;
+    const { locale, prefixCls } = useContext(CalendarContext);
+    const months = locale?.months || defaultMonths;
 
     const cells = useMemo(() => {
         const count = C_COL * C_ROW;
         const cells = [];
-        const prefixCls = context.prefixCls;
         const activeCls = prefixCls + '-active';
         const sameYear = currentYear === valueYear;
         for (let i = 0; i < count; i++) {
@@ -35,7 +33,7 @@ const MonthPanel = ({ value, onChange, current }: MonthPanelProps) => {
             cells.push(cellInfo);
         }
         return cells;
-    }, [context.prefixCls, currentYear, valueYear, valueMonth, months]);
+    }, [prefixCls, currentYear, valueYear, valueMonth, months]);
 
     const onMonthClick = useCallback(
         (index: number) => {
@@ -44,7 +42,18 @@ const MonthPanel = ({ value, onChange, current }: MonthPanelProps) => {
         [current, onChange]
     );
 
-    return <TablePanel cells={cells} onCellClick={onMonthClick} mode={'month'} />;
+    const cls = useMemo(
+        () => ({
+            table: prefixCls + '-table'
+        }),
+        [prefixCls]
+    );
+
+    return (
+        <div className={cls.table}>
+            <TBody cells={cells} onCellClick={onMonthClick} col={C_COL} row={C_ROW} mode={'month'} />
+        </div>
+    );
 };
 
 export default memo(MonthPanel);

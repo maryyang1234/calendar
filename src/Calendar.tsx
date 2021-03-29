@@ -76,7 +76,7 @@ const Calendar = ({
                     <Header
                         value={standardCurrent}
                         onChange={onCurrentChange}
-                        type="date"
+                        mode="date"
                         onModeChange={onModeChange}
                     />
                     <div className={cls.body}>

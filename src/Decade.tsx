@@ -45,7 +45,7 @@ const Decade = ({
     return (
         <div {...rest} className={classnames(cls.wrap, cls.decade, className)}>
             <div className={cls.decadeWrap}>
-                <Header value={standardCurrent} onChange={onCurrentChange} type="decade" />
+                <Header value={standardCurrent} onChange={onCurrentChange} mode="decade" />
                 <div className={cls.body}>
                     <DecadePanel
                         value={standardValue === null ? undefined : standardValue}

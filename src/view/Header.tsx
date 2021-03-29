@@ -1,41 +1,52 @@
 import React, { HTMLAttributes, memo, useCallback, useContext, useMemo } from 'react';
 import { Dayjs, OpUnitType } from 'dayjs';
 
-import { Override } from '../interface';
+import { Override, Mode, HeaderButtonType, HeaderSwitcherType } from '../interface';
 import CalendarContext from '../CalendarContext';
-
-type HeaderType = 'date' | 'month' | 'year' | 'decade';
-type ButtonType =
-    | 'prevMonth'
-    | 'nextMonth'
-    | 'prevYear'
-    | 'nextYear'
-    | 'prev10Year'
-    | 'next10Year'
-    | 'prevDecade'
-    | 'nextDecade';
-
-type Mode = HeaderType | 'final';
 
 const HeaderButtonWithoutMemo = ({
     type,
+    mode,
     onClick,
     ...rest
-}: Override<HTMLAttributes<HTMLSpanElement>, { type: ButtonType; onClick: (type: ButtonType) => void }>) => {
-    const clickHandle = useCallback(() => {
-        onClick(type);
-    }, [onClick, type]);
+}: Override<
+    HTMLAttributes<HTMLSpanElement>,
+    { type: HeaderButtonType; mode: Mode; onClick: (type: HeaderButtonType) => void }
+>) => {
+    const handleClick = useCallback(() => onClick(type), [onClick, type]);
     const context = useContext(CalendarContext);
     const cls = useMemo(() => {
         const prefixCls = context.prefixCls;
         return `${prefixCls}-header-button ${prefixCls}-header-button-${type}`;
     }, [context.prefixCls, type]);
-    return <span onClick={clickHandle} className={cls} {...rest} />;
+    const display = useMemo(() => {
+        switch (type) {
+            case 'prevMonth':
+                return '‹';
+            case 'nextMonth':
+                return '›';
+            case 'prevYear':
+            case 'prev10Year':
+            case 'prevDecade':
+                return '«';
+            case 'nextYear':
+            case 'next10Year':
+            case 'nextDecade':
+                return '»';
+        }
+    }, [type]);
+    const props = { onClick: handleClick, className: cls, children: display, ...rest };
+    return context.components?.HeaderButton ? (
+        <context.components.HeaderButton mode={mode} type={type} {...props} />
+    ) : (
+        <div {...props} />
+    );
 };
 const HeaderButton = memo(HeaderButtonWithoutMemo);
 
 const HeaderSwitcherWithoutMemo = ({
     value,
+    type,
     mode,
     switchMode,
     ...rest
@@ -43,47 +54,61 @@ const HeaderSwitcherWithoutMemo = ({
     HTMLAttributes<HTMLSpanElement>,
     {
         value: Dayjs;
+        type: HeaderSwitcherType;
         mode: Mode;
         switchMode: (mode: Mode) => void;
     }
 >) => {
     const display = useMemo(() => {
-        switch (mode) {
+        switch (type) {
+            case 'date-month':
+                return value.month() + 1;
+            case 'date-year':
             case 'month':
-                return value.month();
-            case 'year':
                 return value.year();
-            case 'decade': {
+            case 'year': {
                 const baseYear = ((value.year() / 10) | 0) * 10;
                 return `${baseYear} - ${baseYear + 9}`;
             }
-            case 'final': {
+            case 'decade': {
                 const baseYear = ((value.year() / 100) | 0) * 100;
                 return `${baseYear} - ${baseYear + 99}`;
             }
-            default:
-                return '';
         }
-    }, [value, mode]);
-    const onClick = useCallback(() => {
-        if (mode === 'final') return;
-        switchMode(mode);
-    }, [mode, switchMode]);
+    }, [value, type]);
+    const handleClick = useCallback(() => {
+        if (type === 'decade') return;
+        switch (type) {
+            case 'date-month':
+                switchMode('month');
+                break;
+            case 'date-year':
+                switchMode('year');
+                break;
+            case 'month':
+                switchMode('year');
+                break;
+            case 'year':
+                switchMode('decade');
+                break;
+        }
+    }, [type, switchMode]);
     const context = useContext(CalendarContext);
     const cls = useMemo(() => {
         const prefixCls = context.prefixCls;
-        return `${prefixCls}-header-switcher ${prefixCls}-header-switcher-${mode}`;
-    }, [context.prefixCls, mode]);
-    return (
-        <span onClick={onClick} className={cls} {...rest}>
-            {display}
-        </span>
+        return `${prefixCls}-header-switcher ${prefixCls}-header-switcher-${type}`;
+    }, [context.prefixCls, type]);
+    const props = { onClick: handleClick, className: cls, children: display, ...rest };
+    return context.components?.HeaderSwitcher ? (
+        <context.components.HeaderSwitcher mode={mode} type={type} {...props} />
+    ) : (
+        <span {...props} />
     );
 };
 
 const HeaderSwitcher = memo(HeaderSwitcherWithoutMemo);
 
-const CalMap: Record<ButtonType, { unit: OpUnitType; count: number }> = {
+const CalMap: Record<HeaderButtonType, { unit: OpUnitType; count: number }> = {
     prevMonth: { unit: 'month', count: -1 },
     nextMonth: { unit: 'month', count: 1 },
     prevYear: { unit: 'year', count: -1 },
@@ -96,100 +121,75 @@ const CalMap: Record<ButtonType, { unit: OpUnitType; count: number }> = {
 
 const Header = ({
     value,
-    type,
     onChange,
+    mode,
     onModeChange
 }: {
     value: Dayjs;
-    type: HeaderType;
     onChange: (v: Dayjs) => void;
+    mode: Mode;
     onModeChange?: (mode: Mode) => void;
 }) => {
-    const onButtonClick = useCallback(
-        (type: ButtonType) => {
+    const handleButtonClick = useCallback(
+        (type: HeaderButtonType) => {
             const { unit, count } = CalMap[type];
             return onChange(value.add(count, unit));
         },
         [onChange, value]
     );
-    const onModeChangeHandle = useCallback(
-        (mode: Mode) => {
-            onModeChange?.(mode);
-        },
-        [onModeChange]
-    );
-
+    const handleModeChange = useCallback((mode: Mode) => onModeChange?.(mode), [onModeChange]);
     const context = useContext(CalendarContext);
     const cls = useMemo(() => {
         const headerPrefix = context.prefixCls + '-header';
         return {
-            header: `${headerPrefix} ${headerPrefix}-${type}`,
+            header: `${headerPrefix} ${headerPrefix}-${mode}`,
             switcherWrap: headerPrefix + '-switcher-wrap'
         };
-    }, [context.prefixCls, type]);
-
-    switch (type) {
+    }, [context.prefixCls, mode]);
+    const buttonProps = { onClick: handleButtonClick, mode };
+    const switcherProps = { value, switchMode: handleModeChange, mode };
+    switch (mode) {
         case 'date':
             return (
                 <div className={cls.header}>
-                    <HeaderButton type="prevYear" onClick={onButtonClick}>
-                        {'«'}
-                    </HeaderButton>
-                    <HeaderButton type="prevMonth" onClick={onButtonClick}>
-                        {'‹'}
-                    </HeaderButton>
+                    <HeaderButton type="prevYear" {...buttonProps} />
+                    <HeaderButton type="prevMonth" {...buttonProps} />
                     <span className={cls.switcherWrap}>
-                        <HeaderSwitcher value={value} mode="year" switchMode={onModeChangeHandle} />
-                        <HeaderSwitcher value={value} mode="month" switchMode={onModeChangeHandle} />
+                        <HeaderSwitcher type="date-year" {...switcherProps} />
+                        <HeaderSwitcher type="date-month" {...switcherProps} />
                     </span>
-                    <HeaderButton type="nextMonth" onClick={onButtonClick}>
-                        {'›'}
-                    </HeaderButton>
-                    <HeaderButton type="nextYear" onClick={onButtonClick}>
-                        {'»'}
-                    </HeaderButton>
+                    <HeaderButton type="nextMonth" {...buttonProps} />
+                    <HeaderButton type="nextYear" {...buttonProps} />
                 </div>
             );
         case 'month':
             return (
                 <div className={cls.header}>
-                    <HeaderButton type="prevYear" onClick={onButtonClick}>
-                        {'«'}
-                    </HeaderButton>
+                    <HeaderButton type="prevYear" {...buttonProps} />
                     <span className={cls.switcherWrap}>
-                        <HeaderSwitcher value={value} mode="year" switchMode={onModeChangeHandle} />
+                        <HeaderSwitcher type="month" {...switcherProps} />
                     </span>
-                    <HeaderButton type="nextYear" onClick={onButtonClick}>
-                        {'»'}
-                    </HeaderButton>
+                    <HeaderButton type="nextYear" {...buttonProps} />
                 </div>
             );
         case 'year':
             return (
                 <div className={cls.header}>
-                    <HeaderButton type="prev10Year" onClick={onButtonClick}>
-                        {'«'}
-                    </HeaderButton>
+                    <HeaderButton type="prev10Year" {...buttonProps} />
                     <span className={cls.switcherWrap}>
-                        <HeaderSwitcher value={value} mode="decade" switchMode={onModeChangeHandle} />
+                        <HeaderSwitcher type="year" {...switcherProps} />
                     </span>
-                    <HeaderButton type="next10Year" onClick={onButtonClick}>
-                        {'»'}
-                    </HeaderButton>
+                    <HeaderButton type="next10Year" {...buttonProps} />
                 </div>
             );
         case 'decade':
             return (
                 <div className={cls.header}>
-                    <HeaderButton type="prevDecade" onClick={onButtonClick}>
-                        {'«'}
-                    </HeaderButton>
+                    <HeaderButton type="prevDecade" {...buttonProps} />
                     <span className={cls.switcherWrap}>
-                        <HeaderSwitcher value={value} mode="final" switchMode={onModeChangeHandle} />
+                        <HeaderSwitcher type="decade" {...switcherProps} />
                     </span>
-                    <HeaderButton type="nextDecade" onClick={onButtonClick}>
-                        {'»'}
-                    </HeaderButton>
+                    <HeaderButton type="nextDecade" {...buttonProps} />
                 </div>
             );
         default:

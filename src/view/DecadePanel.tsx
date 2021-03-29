@@ -3,7 +3,7 @@ import React, { memo, useCallback, useContext, useMemo } from 'react';
 import CalendarContext from '../CalendarContext';
 import classnames from '../util/classnames';
 import { SharedPanelProps } from './interface';
-import TablePanel from './TablePanel';
+import TBody from './TBody';
 
 type DecadePanelProps = SharedPanelProps;
 
@@ -13,13 +13,11 @@ const C_ROW = 4;
 const DecadePanel = ({ value, onChange, current, onCurrentChange }: DecadePanelProps) => {
     const baseYear = useMemo(() => ((current.year() / 100) | 0) * 100, [current]);
     const valueYear = useMemo(() => value?.year(), [value]);
-
-    const context = useContext(CalendarContext);
+    const { prefixCls } = useContext(CalendarContext);
 
     const cells = useMemo(() => {
         const count = C_COL * C_ROW;
         const cells = [];
-        const prefixCls = context.prefixCls;
         const activeCls = prefixCls + '-active';
         const prevCls = prefixCls + '-prev';
         const nextCls = prefixCls + '-next';
@@ -37,7 +35,7 @@ const DecadePanel = ({ value, onChange, current, onCurrentChange }: DecadePanelP
             cells.push(cellInfo);
         }
         return cells;
-    }, [baseYear, valueYear, context.prefixCls]);
+    }, [baseYear, valueYear, prefixCls]);
 
     const onYearClick = useCallback(
         (index: number) => {
@@ -53,6 +51,17 @@ const DecadePanel = ({ value, onChange, current, onCurrentChange }: DecadePanelP
         [baseYear, cells, current, onChange, onCurrentChange]
     );
 
-    return <TablePanel cells={cells} onCellClick={onYearClick} mode={'decade'} />;
+    const cls = useMemo(
+        () => ({
+            table: prefixCls + '-table'
+        }),
+        [prefixCls]
+    );
+
+    return (
+        <div className={cls.table}>
+            <TBody cells={cells} onCellClick={onYearClick} col={C_COL} row={C_ROW} mode={'decade'} />
+        </div>
+    );
 };
 export default memo(DecadePanel);

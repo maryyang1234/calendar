@@ -25,3 +25,21 @@ export type SharedCalendarProps = Override<
         sidebar?: ReactNode;
     }
 >;
+
+export type Mode = 'date' | 'month' | 'year' | 'decade';
+export type HeaderButtonType =
+    | 'prevMonth'
+    | 'nextMonth'
+    | 'prevYear'
+    | 'nextYear'
+    | 'prev10Year'
+    | 'next10Year'
+    | 'prevDecade'
+    | 'nextDecade';
+export type HeaderSwitcherType = 'date-month' | 'date-year' | 'month' | 'year' | 'decade';
+
+export interface CalendarComponents {
+    Cell?: React.ComponentType<HTMLAttributes<any> & { mode: Mode }>;
+    HeaderButton?: React.ComponentType<HTMLAttributes<any> & { mode: Mode; type: HeaderButtonType }>;
+    HeaderSwitcher?: React.ComponentType<HTMLAttributes<any> & { mode: Mode; type: HeaderSwitcherType }>;
+}
