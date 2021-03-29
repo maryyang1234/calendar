@@ -39,6 +39,9 @@
             color: white;
         }
     }
+    &.zr-cal-disabled {
+        color: #cccccc;
+    }
     &.zr-cal-prev,
     &.zr-cal-next {
         color: #cccccc;

@@ -1,5 +1,6 @@
 import dayjs, { Dayjs } from 'dayjs';
 import React, { memo, useCallback, useContext, useMemo } from 'react';
+import { TDate } from 'src/interface';
 
 import CalendarContext, { DefaultContext } from '../CalendarContext';
 import classnames from '../util/classnames';
@@ -9,12 +10,19 @@ import TBody from './TBody';
 type DateBodyProps = SharedPanelProps & {
     // 今日值
     today?: Dayjs;
+    // disable rule
+    disabledDate?: (t: TDate) => boolean;
 };
 
 const C_COL = 7;
 const C_ROW = 6;
 
-const getDays = (v: Dayjs, cls: Record<string, string>, activeV?: Dayjs) => {
+const getDays = (
+    v: Dayjs,
+    cls: Record<string, string>,
+    activeV?: Dayjs,
+    disabledDate?: DateBodyProps['disabledDate']
+) => {
     v = dayjs(v);
     // 月天数
     const daysInMonth = v.daysInMonth();
@@ -36,14 +44,17 @@ const getDays = (v: Dayjs, cls: Record<string, string>, activeV?: Dayjs) => {
             const t = firstDayOfPanel.add(index, 'day');
             const active = t.format('YYYYMMDD') === activeVString;
             const current = index < min ? 'prev' : index >= max ? 'next' : 'current';
+            const disabled = disabledDate?.(t);
             panelInfo.push({
                 t,
                 children: t.date(),
                 current,
                 active,
+                disabled,
                 className: classnames(
                     cls.cell,
                     active && cls.active,
+                    disabled && cls.disabled,
                     current === 'prev' && cls.prev,
                     current === 'next' && cls.next
                 )
@@ -55,7 +66,7 @@ const getDays = (v: Dayjs, cls: Record<string, string>, activeV?: Dayjs) => {
 
 const defaultWeekdays = DefaultContext.locale.weekdays;
 
-const DateBody = ({ value, onChange, current, onCurrentChange }: DateBodyProps) => {
+const DateBody = ({ value, onChange, current, onCurrentChange, disabledDate }: DateBodyProps) => {
     const { locale, prefixCls } = useContext(CalendarContext);
     const weekdays = locale?.weekdays || defaultWeekdays;
 
@@ -66,16 +77,18 @@ const DateBody = ({ value, onChange, current, onCurrentChange }: DateBodyProps) 
             row: prefixCls + '-row',
             cell: prefixCls + '-cell',
             active: prefixCls + '-active',
+            disabled: prefixCls + '-disabled',
             prev: prefixCls + '-prev',
             next: prefixCls + '-next'
         };
     }, [prefixCls]);
 
-    const panelInfo = useMemo(() => getDays(current, cls, value), [cls, current, value]);
+    const panelInfo = useMemo(() => getDays(current, cls, value, disabledDate), [cls, current, value, disabledDate]);
 
     const onDateClick = useCallback(
         (index: number) => {
             const t = panelInfo[index];
+            if (t.disabled) return;
             if (t.current === 'current') {
                 onChange(t.t);
             } else {

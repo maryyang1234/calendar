@@ -14,6 +14,8 @@ import classnames from './util/classnames';
 type CalendarProps = SharedCalendarProps & {
     // value of today
     today?: TDate;
+    // disable rule
+    disabledDate?: (t: TDate) => boolean;
 };
 
 const Calendar = ({
@@ -26,6 +28,7 @@ const Calendar = ({
     onCurrentChange: _onCurrentChange,
     sidebar,
     className,
+    disabledDate,
     ...rest
 }: CalendarProps) => {
     const now = useMemo(() => new Date(), []);
@@ -84,6 +87,7 @@ const Calendar = ({
                             today={standardToday}
                             value={standardValue === null ? undefined : standardValue}
                             onChange={onChange}
+                            disabledDate={disabledDate}
                             current={standardCurrent}
                             onCurrentChange={onCurrentChange}
                         />

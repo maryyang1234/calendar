@@ -2,7 +2,7 @@ import React, { HTMLAttributes, useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
 
 import { Calendar, Month, Year, Timer } from '../src';
-import { Mode } from '../src/interface';
+import { Mode, TDate } from '../src/interface';
 import './index.scss';
 
 const dom = document.getElementById('app');
@@ -35,10 +35,15 @@ const Cell = ({ children, mode, ...rest }: HTMLAttributes<HTMLDivElement> & { mo
     );
 };
 
+const disabledDate = (t: TDate) => {
+    console.log(new Date(+t).getDate() > 28);
+    return new Date(+t).getDate() > 28;
+};
+
 const App = () => {
     return (
         <div>
-            <Calendar onChange={console.log} components={{ Cell: Cell }} />
+            <Calendar onChange={console.log} components={{ Cell: Cell }} disabledDate={disabledDate} />
             <Month onChange={console.log} />
             <Year onChange={console.log} onCurrentChange={console.log} />
             <Timer value={now} onChange={console.log} />
