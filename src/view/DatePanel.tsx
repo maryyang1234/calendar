@@ -100,12 +100,12 @@ const DateBody = ({ value, onChange, current, onCurrentChange, today, disabledDa
     const onDateClick = useCallback(
         (index: number) => {
             const t = panelInfo[index];
-            if (t.current === 'current') {
-                onChange(t.t);
+            if (t.current !== 'current') {
+                onCurrentChange(t.t);
             } else if (t.disabled) {
                 return;
             } else {
-                onCurrentChange(t.t);
+                onChange(t.t);
             }
         },
         [onChange, onCurrentChange, panelInfo]
