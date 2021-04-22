@@ -73,9 +73,9 @@
     "react-dom": "^16"
   },
   "dependencies": {
-    "@babel/runtime": "^7",
-    "core-js": "^3",
-    "dayjs": "^1",
-    "moment": "^2"
+    "@babel/runtime": "7.x",
+    "core-js": "3.x",
+    "dayjs": "1.x",
+    "moment": "2.x"
   }
 }
