@@ -1,6 +1,6 @@
 import React, { memo, useCallback, useContext, useMemo } from 'react';
 
-import { TDate } from 'src/interface';
+import { DisabledFunc } from 'src/interface';
 import { add, format, getDaysInMonth, set } from 'src/util/date';
 import classnames from 'src/util/classnames';
 import CalendarContext, { DefaultContext } from 'src/CalendarContext';
@@ -9,7 +9,7 @@ import TBody from 'src/view/TBody';
 
 type DateBodyProps = SharedPanelProps & {
     // disable rule
-    disabledDate?: (t: TDate, value?: TDate) => boolean;
+    disabledDate?: DisabledFunc;
 };
 
 const C_COL = 7;

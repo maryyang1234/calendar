@@ -28,6 +28,8 @@ export type SharedCalendarProps = Override<
     }
 >;
 
+export type DisabledFunc = (t: TDate, value?: TDate) => boolean;
+
 export type Mode = 'date' | 'month' | 'year' | 'decade';
 export type HeaderButtonType =
     | 'prevMonth'

@@ -5,13 +5,14 @@ import { set } from 'src/util/date';
 import classnames from 'src/util/classnames';
 import { SharedPanelProps } from 'src/view/interface';
 import TBody from 'src/view/TBody';
+import { DisabledFunc } from 'src/interface';
 
-type DecadePanelProps = SharedPanelProps;
+type DecadePanelProps = SharedPanelProps & { disabledDecade?: DisabledFunc };
 
 const C_COL = 3;
 const C_ROW = 4;
 
-const DecadePanel = ({ now, value, onChange, current, onCurrentChange }: DecadePanelProps) => {
+const DecadePanel = ({ now, value, onChange, current, onCurrentChange, disabledDecade }: DecadePanelProps) => {
     const baseYear = useMemo(() => ((current.getFullYear() / 100) | 0) * 100, [current]);
     const valueYear = useMemo(() => value?.getFullYear(), [value]);
     const nowYear = useMemo(() => now?.getFullYear(), [now]);
@@ -20,6 +21,7 @@ const DecadePanel = ({ now, value, onChange, current, onCurrentChange }: DecadeP
     const cells = useMemo(() => {
         const cells = [];
         const activeCls = prefixCls + '-active';
+        const disabledCls = prefixCls + '-disabled';
         const nowCls = prefixCls + '-now';
         const prevCls = prefixCls + '-prev';
         const nextCls = prefixCls + '-next';
@@ -30,22 +32,24 @@ const DecadePanel = ({ now, value, onChange, current, onCurrentChange }: DecadeP
             const latestYear = year + 9;
             const active = valueYear !== undefined && valueYear >= year && valueYear <= latestYear;
             const isNow = nowYear !== undefined && nowYear >= year && nowYear <= latestYear;
-            const current = i < 0 ? 'prev' : i > 9 ? 'next' : 'current';
+            const disabled = disabledDecade?.(set(current, year, 'year'), value);
+            const isCurrent = i < 0 ? 'prev' : i > 9 ? 'next' : 'current';
             const cellInfo = {
                 children: year + '-' + latestYear,
-                current,
+                current: isCurrent,
                 year,
                 className: classnames(
                     active && activeCls,
                     isNow && nowCls,
-                    current === 'prev' && prevCls,
-                    current === 'next' && nextCls
+                    disabled && disabledCls,
+                    isCurrent === 'prev' && prevCls,
+                    isCurrent === 'next' && nextCls
                 )
             };
             cells.push(cellInfo);
         }
         return cells;
-    }, [prefixCls, onlyValidDecade, baseYear, valueYear, nowYear]);
+    }, [prefixCls, onlyValidDecade, baseYear, valueYear, nowYear, disabledDecade, current, value]);
 
     const onYearClick = useCallback(
         (index: number) => {

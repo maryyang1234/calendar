@@ -4,12 +4,19 @@ import MonthPanel from 'src/view/MonthPanel';
 import Header from 'src/view/Header';
 import Year from 'src/Year';
 import standard from 'src/util/standard';
-import { SharedCalendarProps, TDate } from 'src/interface';
+import { DisabledFunc, SharedCalendarProps, TDate } from 'src/interface';
 import useUncontrolled from 'src/useUncontrolled';
 import CalendarContext, { withContext } from 'src/CalendarContext';
 import classnames from 'src/util/classnames';
 
-type MonthProps = SharedCalendarProps;
+type MonthProps = SharedCalendarProps & {
+    // disable rule
+    disabledRule?: {
+        month?: DisabledFunc;
+        year?: DisabledFunc;
+        decade?: DisabledFunc;
+    };
+};
 
 const Month = ({
     now,
@@ -21,6 +28,7 @@ const Month = ({
     onCurrentChange: _onCurrentChange,
     sidebar,
     className,
+    disabledRule = {},
     ...rest
 }: MonthProps) => {
     const d = useMemo(() => new Date(), []);
@@ -34,6 +42,7 @@ const Month = ({
     const standardCurrent = useMemo(() => standard(current), [current]);
     const standardNow = useMemo(() => standard(now === undefined ? d : now), [d, now]);
     const [mode, setMode] = useState('month');
+    const { month: disabledMonth, ...restDisabledRule } = disabledRule;
     const onModeChange = useCallback((mode: string) => {
         setMode(mode);
     }, []);
@@ -64,6 +73,7 @@ const Month = ({
                     onChange={onYearChange}
                     defaultCurrent={current}
                     sidebar={sidebar}
+                    disabledRule={restDisabledRule}
                 />
             ) : (
                 <div className={cls.monthWrap}>
@@ -79,6 +89,7 @@ const Month = ({
                             value={standardValue === null ? undefined : standardValue}
                             onChange={onChange}
                             current={standardCurrent}
+                            disabledMonth={disabledMonth}
                         />
                         {sidebar}
                     </div>

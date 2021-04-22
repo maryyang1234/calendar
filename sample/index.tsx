@@ -38,11 +38,24 @@ const Cell = ({ children, mode, ...rest }: HTMLAttributes<HTMLDivElement> & { mo
 const disabledDate = (t: TDate) => {
     return new Date(+t).getDate() > 28;
 };
+const disabledMonth = (t: TDate) => {
+    return new Date(+t).getMonth() > 6;
+};
+const disabledYear = (t: TDate) => {
+    return new Date(+t).getFullYear() > new Date().getFullYear();
+};
+const disabledDecade = (t: TDate) => {
+    return new Date(+t).getFullYear() > new Date().getFullYear();
+};
 
 const App = () => {
     return (
         <div>
-            <Calendar onChange={console.log} components={{ Cell: Cell }} disabledDate={disabledDate} />
+            <Calendar
+                onChange={console.log}
+                components={{ Cell: Cell }}
+                disabledRule={{ date: disabledDate, month: disabledMonth, year: disabledYear, decade: disabledDecade }}
+            />
             <Month onChange={console.log} now={null} />
             <Year onChange={console.log} onCurrentChange={console.log} />
             <Timer value={now} onChange={console.log} />

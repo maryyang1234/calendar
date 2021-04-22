@@ -4,12 +4,18 @@ import YearPanel from 'src/view/YearPanel';
 import Header from 'src/view/Header';
 import Decade from 'src/Decade';
 import CalendarContext, { withContext } from 'src/CalendarContext';
-import { SharedCalendarProps, TDate } from 'src/interface';
+import { DisabledFunc, SharedCalendarProps, TDate } from 'src/interface';
 import useUncontrolled from 'src/useUncontrolled';
 import standard from 'src/util/standard';
 import classnames from 'src/util/classnames';
 
-type YearProps = SharedCalendarProps;
+type YearProps = SharedCalendarProps & {
+    // disable rule
+    disabledRule?: {
+        year?: DisabledFunc;
+        decade?: DisabledFunc;
+    };
+};
 
 const Year = ({
     now,
@@ -21,6 +27,7 @@ const Year = ({
     onCurrentChange: _onCurrentChange,
     sidebar,
     className,
+    disabledRule = {},
     ...rest
 }: YearProps) => {
     const d = useMemo(() => new Date(), []);
@@ -34,6 +41,7 @@ const Year = ({
     const standardCurrent = useMemo(() => standard(current), [current]);
     const standardNow = useMemo(() => standard(now === undefined ? d : now), [d, now]);
     const [mode, setMode] = useState('year');
+    const { year: disabledYear, ...restDisabledRule } = disabledRule;
     const onModeChange = useCallback((mode: string) => setMode(mode), []);
     const onDecadeChange = useCallback(
         (current: Date) => {
@@ -62,6 +70,7 @@ const Year = ({
                     defaultCurrent={current}
                     onChange={onDecadeChange}
                     sidebar={sidebar}
+                    disabledRule={restDisabledRule}
                 />
             ) : (
                 <div className={cls.yearWrap}>
@@ -78,6 +87,7 @@ const Year = ({
                             onChange={onChange}
                             current={standardCurrent}
                             onCurrentChange={onCurrentChange}
+                            disabledYear={disabledYear}
                         />
                         {sidebar}
                     </div>
