@@ -1,8 +1,8 @@
 import React, { HTMLAttributes, memo, ReactNode, useCallback, useContext, useMemo } from 'react';
 
-import CalendarContext from '../CalendarContext';
-import { Mode, Override } from '../interface';
-import classnames from '../util/classnames';
+import CalendarContext from 'src/CalendarContext';
+import { Mode, Override } from 'src/interface';
+import classnames from 'src/util/classnames';
 
 interface TBodyProps {
     // prefix
@@ -46,11 +46,19 @@ const TBody = ({ cells, onCellClick, col, row, mode }: TBodyProps) => {
         () => ({
             body: prefixCls + '-tbody',
             row: prefixCls + '-row',
-            cell: prefixCls + '-cell'
+            cell: prefixCls + '-cell',
+            emptyCell: prefixCls + '-cell-empty'
         }),
         [prefixCls]
     );
-    const handleClick = useCallback((index: number) => onCellClick(index), [onCellClick]);
+    const handleClick = useCallback(
+        (index: number) => {
+            const cellInfo = cells[index];
+            if (!cellInfo) return;
+            onCellClick(index);
+        },
+        [cells, onCellClick]
+    );
     const renderBody = () => {
         const info = [];
         for (let i = 0; i < row; i++) {
@@ -61,7 +69,7 @@ const TBody = ({ cells, onCellClick, col, row, mode }: TBodyProps) => {
                 group.push(
                     <Cell
                         key={index}
-                        className={classnames(cls.cell, cellInfo?.className)}
+                        className={classnames(cls.cell, cellInfo?.className, !cellInfo && cls.emptyCell)}
                         index={index}
                         onClick={handleClick}
                         mode={mode}

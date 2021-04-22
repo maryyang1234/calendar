@@ -1,12 +1,10 @@
-import { Dayjs } from 'dayjs';
-
 export interface SharedPanelProps {
     // 选中值
-    value?: Dayjs;
+    value?: Date;
     // 选中回调
-    onChange: (t: Dayjs) => void;
+    onChange: (t: Date) => void;
     // 当前面板值
-    current: Dayjs;
+    current: Date;
     // 面板切换回调
-    onCurrentChange: (t: Dayjs) => void;
+    onCurrentChange: (t: Date) => void;
 }

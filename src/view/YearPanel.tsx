@@ -1,9 +1,10 @@
 import React, { memo, useCallback, useContext, useMemo } from 'react';
 
-import CalendarContext from '../CalendarContext';
-import classnames from '../util/classnames';
-import { SharedPanelProps } from './interface';
-import TBody from './TBody';
+import CalendarContext from 'src/CalendarContext';
+import classnames from 'src/util/classnames';
+import { set } from 'src/util/date';
+import { SharedPanelProps } from 'src/view/interface';
+import TBody from 'src/view/TBody';
 
 type YearPanelProps = SharedPanelProps;
 
@@ -11,42 +12,46 @@ const C_COL = 3;
 const C_ROW = 4;
 
 const YearPanel = ({ value, onChange, current, onCurrentChange }: YearPanelProps) => {
-    const baseYear = useMemo(() => ((current.year() / 10) | 0) * 10, [current]);
-    const valueYear = useMemo(() => value?.year(), [value]);
-    const { prefixCls } = useContext(CalendarContext);
+    const baseYear = useMemo(() => ((current.getFullYear() / 10) | 0) * 10, [current]);
+    const valueYear = useMemo(() => value?.getFullYear(), [value]);
+    const { prefixCls, onlyValidYear, onChangeWhenPrevNextClick } = useContext(CalendarContext);
 
     const cells = useMemo(() => {
-        const count = C_COL * C_ROW;
         const cells = [];
         const activeCls = prefixCls + '-active';
         const prevCls = prefixCls + '-prev';
         const nextCls = prefixCls + '-next';
-        for (let i = 0; i < count; i++) {
-            const year = baseYear + i - 1;
+        const start = onlyValidYear ? 0 : -1;
+        const end = (onlyValidYear ? 10 : C_COL * C_ROW) + start;
+        for (let i = start; i < end; i++) {
+            const year = baseYear + i;
             const active = valueYear === year;
-            const current = i === 0 ? 'prev' : i > 10 ? 'next' : 'current';
+            const current = i < 0 ? 'prev' : i > 9 ? 'next' : 'current';
             const cellInfo = {
                 children: year,
                 current,
+                year,
                 className: classnames(active && activeCls, current === 'prev' && prevCls, current === 'next' && nextCls)
             };
             cells.push(cellInfo);
         }
         return cells;
-    }, [prefixCls, baseYear, valueYear]);
+    }, [onlyValidYear, prefixCls, baseYear, valueYear]);
 
     const onYearClick = useCallback(
         (index: number) => {
             const cellInfo = cells[index];
+            if (!cellInfo) return;
             if (cellInfo.current === 'prev') {
-                onCurrentChange(current.set('year', baseYear - 10));
+                onCurrentChange(set(current, baseYear - 10, 'year'));
             } else if (cellInfo.current === 'next') {
-                onCurrentChange(current.set('year', baseYear + 10));
-            } else {
-                onChange(current.set('year', baseYear + index - 1));
+                onCurrentChange(set(current, baseYear + 10, 'year'));
+            }
+            if (cellInfo.current === 'current' || onChangeWhenPrevNextClick) {
+                onChange(set(current, cellInfo.year, 'year'));
             }
         },
-        [baseYear, cells, current, onChange, onCurrentChange]
+        [baseYear, cells, current, onChange, onChangeWhenPrevNextClick, onCurrentChange]
     );
 
     const cls = useMemo(

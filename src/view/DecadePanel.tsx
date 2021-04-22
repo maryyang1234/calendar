@@ -1,9 +1,10 @@
 import React, { memo, useCallback, useContext, useMemo } from 'react';
 
-import CalendarContext from '../CalendarContext';
-import classnames from '../util/classnames';
-import { SharedPanelProps } from './interface';
-import TBody from './TBody';
+import CalendarContext from 'src/CalendarContext';
+import { set } from 'src/util/date';
+import classnames from 'src/util/classnames';
+import { SharedPanelProps } from 'src/view/interface';
+import TBody from 'src/view/TBody';
 
 type DecadePanelProps = SharedPanelProps;
 
@@ -11,21 +12,22 @@ const C_COL = 3;
 const C_ROW = 4;
 
 const DecadePanel = ({ value, onChange, current, onCurrentChange }: DecadePanelProps) => {
-    const baseYear = useMemo(() => ((current.year() / 100) | 0) * 100, [current]);
-    const valueYear = useMemo(() => value?.year(), [value]);
-    const { prefixCls } = useContext(CalendarContext);
+    const baseYear = useMemo(() => ((current.getFullYear() / 100) | 0) * 100, [current]);
+    const valueYear = useMemo(() => value?.getFullYear(), [value]);
+    const { prefixCls, onlyValidDecade } = useContext(CalendarContext);
 
     const cells = useMemo(() => {
-        const count = C_COL * C_ROW;
         const cells = [];
         const activeCls = prefixCls + '-active';
         const prevCls = prefixCls + '-prev';
         const nextCls = prefixCls + '-next';
-        for (let i = 0; i < count; i++) {
-            const year = baseYear + (i - 1) * 10;
+        const start = onlyValidDecade ? 0 : -1;
+        const end = (onlyValidDecade ? 10 : C_COL * C_ROW) + start;
+        for (let i = start; i < end; i++) {
+            const year = baseYear + i * 10;
             const latestYear = year + 9;
             const active = valueYear !== undefined && valueYear >= year && valueYear <= latestYear;
-            const current = i === 0 ? 'prev' : i > 10 ? 'next' : 'current';
+            const current = i < 0 ? 'prev' : i > 9 ? 'next' : 'current';
             const cellInfo = {
                 children: year + '-' + latestYear,
                 current,
@@ -35,18 +37,23 @@ const DecadePanel = ({ value, onChange, current, onCurrentChange }: DecadePanelP
             cells.push(cellInfo);
         }
         return cells;
-    }, [baseYear, valueYear, prefixCls]);
+    }, [prefixCls, onlyValidDecade, baseYear, valueYear]);
 
     const onYearClick = useCallback(
         (index: number) => {
             const cellInfo = cells[index];
+            if (!cellInfo) return;
+            let v;
             if (cellInfo.current === 'prev') {
-                onCurrentChange(current.set('year', baseYear - 100));
+                v = set(current, baseYear - 100, 'year');
+                onCurrentChange(v);
             } else if (cellInfo.current === 'next') {
-                onCurrentChange(current.set('year', baseYear + 100));
+                v = set(current, baseYear + 100, 'year');
+                onCurrentChange(v);
             } else {
-                onChange(current.set('year', cellInfo.year));
+                v = set(current, cellInfo.year, 'year');
             }
+            onChange(v);
         },
         [baseYear, cells, current, onChange, onCurrentChange]
     );
@@ -60,7 +67,7 @@ const DecadePanel = ({ value, onChange, current, onCurrentChange }: DecadePanelP
 
     return (
         <div className={cls.table}>
-            <TBody cells={cells} onCellClick={onYearClick} col={C_COL} row={C_ROW} mode={'decade'} />
+            <TBody cells={cells} onCellClick={onYearClick} col={C_COL} row={C_ROW} mode="decade" />
         </div>
     );
 };

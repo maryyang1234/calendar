@@ -36,7 +36,6 @@ const Cell = ({ children, mode, ...rest }: HTMLAttributes<HTMLDivElement> & { mo
 };
 
 const disabledDate = (t: TDate) => {
-    console.log(new Date(+t).getDate() > 28);
     return new Date(+t).getDate() > 28;
 };
 

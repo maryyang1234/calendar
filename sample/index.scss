@@ -28,16 +28,12 @@
     flex: 1;
     text-align: center;
     cursor: pointer;
-    .zr-cal-content {
-        padding: 0.25em 0.5em;
-        display: inline-block;
-        user-select: none;
-    }
+    padding: 0.25em 0.5em;
+    display: inline-block;
+    user-select: none;
     &.zr-cal-active {
-        .zr-cal-content {
-            background: #3860f4;
-            color: white;
-        }
+        background: #3860f4;
+        color: white;
     }
     &.zr-cal-disabled {
         color: #cccccc;
@@ -46,22 +42,23 @@
     &.zr-cal-next {
         color: #cccccc;
         &.zr-cal-active {
-            .zr-cal-content {
-                background: #d2d6ea;
-            }
+            background: #d2d6ea;
         }
     }
+    &.zr-cal-cell-empty {
+        cursor: default;
+    }
 }
-.zr-cal-date-wrap .zr-cal-content {
+.zr-cal-date-wrap .zr-cal-cell {
     width: 4em;
 }
-.zr-cal-month-wrap .zr-cal-content {
+.zr-cal-month-wrap .zr-cal-cell {
     width: 5em;
 }
-.zr-cal-year-wrap .zr-cal-content {
+.zr-cal-year-wrap .zr-cal-cell {
     width: 6em;
 }
-.zr-cal-decade-wrap .zr-cal-content {
+.zr-cal-decade-wrap .zr-cal-cell {
     width: 12em;
 }
 

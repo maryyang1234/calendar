@@ -1,21 +1,33 @@
-import React, { ComponentType, createContext, HTMLAttributes, memo, useContext, useMemo } from 'react';
+import React, { ComponentType, createContext, memo, useContext, useMemo } from 'react';
 
-import { CalendarComponents } from './interface';
-import { months, weekdays } from './locale/en_us';
+import { CalendarComponents } from 'src/interface';
+import { months, weekdays } from 'src/locale/en_us';
 
 export interface Context {
+    // custom locale
     locale?: { months: string[]; weekdays: string[] };
+    // prefix for classnames
     prefixCls?: string;
+    // custom component
     components?: CalendarComponents;
+    // place month before year
+    monthBeforeYear?: boolean;
+    // only show valid year on year panel
+    onlyValidYear?: boolean;
+    // only show valid decade on decade panel
+    onlyValidDecade?: boolean;
+    // onChange when prev, next click
+    onChangeWhenPrevNextClick?: boolean;
 }
 
 export const DefaultContext: Required<Context> = {
-    locale: {
-        months,
-        weekdays
-    },
+    locale: { months, weekdays },
     prefixCls: 'zr-cal',
-    components: {}
+    components: {},
+    monthBeforeYear: true,
+    onlyValidYear: true,
+    onlyValidDecade: true,
+    onChangeWhenPrevNextClick: true
 };
 
 export type ContextKeys = keyof Context;

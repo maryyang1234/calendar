@@ -1,10 +1,8 @@
-import dayjs, { Dayjs } from 'dayjs';
+import { TDate } from 'src/interface';
 
-import { TDate } from '../interface';
-
-function standard(v: TDate): Dayjs;
-function standard(v: TDate | null): Dayjs | null;
-function standard(v: TDate | null): Dayjs | null {
+function standard(v: TDate): Date;
+function standard(v: TDate | null): Date | null;
+function standard(v: TDate | null): Date | null {
     if (v === null) return null;
     let date: Date;
     if (typeof v === 'number' || typeof v === 'string' || v instanceof Date) {
@@ -12,7 +10,7 @@ function standard(v: TDate | null): Dayjs | null {
     } else {
         date = new Date(+v);
     }
-    return dayjs(date);
+    return date;
 }
 
 export default standard;

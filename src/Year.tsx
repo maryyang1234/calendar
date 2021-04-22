@@ -1,14 +1,13 @@
 import React, { memo, useCallback, useContext, useMemo, useState } from 'react';
-import { Dayjs } from 'dayjs';
 
-import YearPanel from './view/YearPanel';
-import Header from './view/Header';
-import Decade from './Decade';
-import standard from './util/standard';
-import { SharedCalendarProps, TDate } from './interface';
-import useUncontrolled from './useUncontrolled';
-import CalendarContext, { withContext } from './CalendarContext';
-import classnames from './util/classnames';
+import YearPanel from 'src/view/YearPanel';
+import Header from 'src/view/Header';
+import Decade from 'src/Decade';
+import CalendarContext, { withContext } from 'src/CalendarContext';
+import { SharedCalendarProps, TDate } from 'src/interface';
+import useUncontrolled from 'src/useUncontrolled';
+import standard from 'src/util/standard';
+import classnames from 'src/util/classnames';
 
 type YearProps = SharedCalendarProps;
 
@@ -24,9 +23,9 @@ const Year = ({
     ...rest
 }: YearProps) => {
     const now = useMemo(() => new Date(), []);
-    const [value, onChange] = useUncontrolled<TDate | null, Dayjs>(_value, defaultValue, _onChange);
+    const [value, onChange] = useUncontrolled<TDate | null, Date>(_value, defaultValue, _onChange);
     const standardValue = useMemo(() => standard(value), [value]);
-    const [current, onCurrentChange] = useUncontrolled<TDate, Dayjs>(
+    const [current, onCurrentChange] = useUncontrolled<TDate, Date>(
         _current,
         defaultCurrent || value || now,
         _onCurrentChange
@@ -35,7 +34,7 @@ const Year = ({
     const [mode, setMode] = useState('year');
     const onModeChange = useCallback((mode: string) => setMode(mode), []);
     const onDecadeChange = useCallback(
-        (current: Dayjs) => {
+        (current: Date) => {
             onCurrentChange(current);
             setMode('year');
         },

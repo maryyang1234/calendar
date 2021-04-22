@@ -1,8 +1,8 @@
 import React, { HTMLAttributes, memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
-import classnames from './util/classnames';
-import useUncontrolled from './useUncontrolled';
-import { Override } from './interface';
+import classnames from 'src/util/classnames';
+import useUncontrolled from 'src/useUncontrolled';
+import { Override } from 'src/interface';
 
 const StepperWithoutMemo = ({
     index,

@@ -1,13 +1,12 @@
 import React, { memo, useContext, useMemo } from 'react';
-import { Dayjs } from 'dayjs';
 
-import DecadePanel from './view/DecadePanel';
-import Header from './view/Header';
-import standard from './util/standard';
-import { SharedCalendarProps, TDate } from './interface';
-import useUncontrolled from './useUncontrolled';
-import CalendarContext, { withContext } from './CalendarContext';
-import classnames from './util/classnames';
+import DecadePanel from 'src/view/DecadePanel';
+import Header from 'src/view/Header';
+import standard from 'src/util/standard';
+import { SharedCalendarProps, TDate } from 'src/interface';
+import useUncontrolled from 'src/useUncontrolled';
+import CalendarContext, { withContext } from 'src/CalendarContext';
+import classnames from 'src/util/classnames';
 
 type DecadeProps = SharedCalendarProps;
 
@@ -23,13 +22,13 @@ const Decade = ({
     ...rest
 }: DecadeProps) => {
     const now = useMemo(() => new Date(), []);
-    const [value, onChange] = useUncontrolled<TDate | null, Dayjs>(_value, defaultValue, _onChange);
+    const [value, onChange] = useUncontrolled<TDate | null, Date>(_value, defaultValue, _onChange);
     const standardValue = useMemo(() => standard(value), [value]);
-    const [current, onCurrentChange] = useUncontrolled<TDate, Dayjs>(
+    const [current, onCurrentChange] = useUncontrolled<TDate, Date>(
         _current,
         defaultCurrent || value || now,
         _onCurrentChange
-    );
+);
     const standardCurrent = useMemo(() => standard(current), [current]);
     const context = useContext(CalendarContext);
     const cls = useMemo(() => {

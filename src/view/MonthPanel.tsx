@@ -1,9 +1,10 @@
 import React, { memo, useCallback, useContext, useMemo } from 'react';
 
-import CalendarContext, { DefaultContext } from '../CalendarContext';
-import classnames from '../util/classnames';
-import { SharedPanelProps } from './interface';
-import TBody from './TBody';
+import { set } from 'src/util/date';
+import CalendarContext, { DefaultContext } from 'src/CalendarContext';
+import classnames from 'src/util/classnames';
+import { SharedPanelProps } from 'src/view/interface';
+import TBody from 'src/view/TBody';
 
 type MonthPanelProps = Omit<SharedPanelProps, 'onCurrentChange'>;
 
@@ -13,9 +14,9 @@ const C_ROW = 4;
 const defaultMonths = DefaultContext.locale.months;
 
 const MonthPanel = ({ value, onChange, current }: MonthPanelProps) => {
-    const valueMonth = useMemo(() => value?.month(), [value]);
-    const valueYear = useMemo(() => value?.year(), [value]);
-    const currentYear = useMemo(() => current.year(), [current]);
+    const valueMonth = useMemo(() => value?.getMonth(), [value]);
+    const valueYear = useMemo(() => value?.getFullYear(), [value]);
+    const currentYear = useMemo(() => current?.getFullYear(), [current]);
     const { locale, prefixCls } = useContext(CalendarContext);
     const months = locale?.months || defaultMonths;
 
@@ -37,7 +38,7 @@ const MonthPanel = ({ value, onChange, current }: MonthPanelProps) => {
 
     const onMonthClick = useCallback(
         (index: number) => {
-            onChange(current.set('month', index));
+            onChange(set(current, index, 'month'));
         },
         [current, onChange]
     );

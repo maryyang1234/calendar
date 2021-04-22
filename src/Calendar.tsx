@@ -1,15 +1,14 @@
 import React, { memo, useCallback, useContext, useMemo, useState } from 'react';
-import dayjs, { Dayjs } from 'dayjs';
 
-import DatePanel from './view/DatePanel';
-import Header from './view/Header';
-import Month from './Month';
-import Year from './Year';
-import standard from './util/standard';
-import { SharedCalendarProps, TDate } from './interface';
-import useUncontrolled from './useUncontrolled';
-import CalendarContext, { withContext } from './CalendarContext';
-import classnames from './util/classnames';
+import DatePanel from 'src/view/DatePanel';
+import Header from 'src/view/Header';
+import Month from 'src/Month';
+import Year from 'src/Year';
+import standard from 'src/util/standard';
+import { SharedCalendarProps, TDate } from 'src/interface';
+import useUncontrolled from 'src/useUncontrolled';
+import CalendarContext, { withContext } from 'src/CalendarContext';
+import classnames from 'src/util/classnames';
 
 type CalendarProps = SharedCalendarProps & {
     // value of today
@@ -32,26 +31,26 @@ const Calendar = ({
     ...rest
 }: CalendarProps) => {
     const now = useMemo(() => new Date(), []);
-    const [value, onChange] = useUncontrolled<TDate | null, Dayjs>(_value, defaultValue, _onChange);
+    const [value, onChange] = useUncontrolled<TDate | null, Date>(_value, defaultValue, _onChange);
     const standardValue = useMemo(() => standard(value), [value]);
-    const [current, onCurrentChange] = useUncontrolled<TDate, Dayjs>(
+    const [current, onCurrentChange] = useUncontrolled<TDate, Date>(
         _current,
         defaultCurrent || value || now,
         _onCurrentChange
     );
     const standardCurrent = useMemo(() => standard(current), [current]);
-    const standardToday = useMemo(() => standard(today || dayjs()), [today]);
+    const standardToday = useMemo(() => standard(today || new Date()), [today]);
     const [mode, setMode] = useState('date');
     const onModeChange = useCallback((mode: string) => setMode(mode), []);
     const onMonthChange = useCallback(
-        (current: Dayjs) => {
+        (current: Date) => {
             onCurrentChange(current);
             setMode('date');
         },
         [onCurrentChange]
     );
     const onYearChange = useCallback(
-        (current: Dayjs) => {
+        (current: Date) => {
             onCurrentChange(current);
             setMode('month');
         },

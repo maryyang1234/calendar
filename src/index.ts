@@ -1,9 +1,9 @@
-import Calendar from './Calendar';
+import Calendar from 'src/Calendar';
 export { Calendar };
 export default Calendar;
 
-export { default as Month } from './Month';
+export { default as Month } from 'src/Month';
 
-export { default as Year } from './Year';
+export { default as Year } from 'src/Year';
 
-export { default as Timer } from './Timer';
+export { default as Timer } from 'src/Timer';

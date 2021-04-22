@@ -1,15 +1,15 @@
-import dayjs, { Dayjs } from 'dayjs';
 import React, { memo, useCallback, useContext, useMemo } from 'react';
-import { TDate } from 'src/interface';
 
-import CalendarContext, { DefaultContext } from '../CalendarContext';
-import classnames from '../util/classnames';
-import { SharedPanelProps } from './interface';
-import TBody from './TBody';
+import { TDate } from 'src/interface';
+import { add, format, getDaysInMonth, set } from 'src/util/date';
+import classnames from 'src/util/classnames';
+import CalendarContext, { DefaultContext } from 'src/CalendarContext';
+import { SharedPanelProps } from 'src/view/interface';
+import TBody from 'src/view/TBody';
 
 type DateBodyProps = SharedPanelProps & {
     // date of today
-    today?: Dayjs;
+    today?: Date;
     // disable rule
     disabledDate?: (t: TDate, value?: TDate) => boolean;
 };
@@ -18,23 +18,24 @@ const C_COL = 7;
 const C_ROW = 6;
 
 const getDays = (
-    v: Dayjs,
+    v: Date,
     cls: Record<string, string>,
-    activeV?: Dayjs,
-    today?: Dayjs,
+    activeV?: Date,
+    today?: Date,
     disabledDate?: DateBodyProps['disabledDate']
 ) => {
-    v = dayjs(v);
+    v = new Date(+v);
     // 月天数
-    const daysInMonth = v.daysInMonth();
+    const daysInMonth = getDaysInMonth(v);
     // 月初
-    const firstDayOfMonth = v.set('date', 1);
+    const firstDayOfMonth = set(v, 1, 'date');
     // 周几，0 为周日
-    const day = firstDayOfMonth.day();
+    const day = firstDayOfMonth.getDay();
     // 面板的第一天
-    const firstDayOfPanel = firstDayOfMonth.add(-day, 'day');
-    const activeVString = activeV?.format('YYYYMMDD');
-    const todayVString = today?.format('YYYYMMDD');
+    const firstDayOfPanel = new Date(+firstDayOfMonth - day * 1000 * 60 * 60 * 24);
+
+    const activeVString = format(activeV, 'YYYYMMDD');
+    const todayVString = format(today, 'YYYYMMDD');
 
     const min = day;
     const max = day + daysInMonth;
@@ -43,15 +44,15 @@ const getDays = (
     for (let i = 0; i < C_ROW; i++) {
         for (let j = 0; j < C_COL; j++) {
             const index = i * C_COL + j;
-            const t = firstDayOfPanel.add(index, 'day');
-            const tString = t.format('YYYYMMDD');
+            const t = add(firstDayOfPanel, index, 'date');
+            const tString = format(t, 'YYYYMMDD');
             const active = tString === activeVString;
             const current = index < min ? 'prev' : index >= max ? 'next' : 'current';
             const disabled = disabledDate?.(t, activeV);
             const isToday = tString === todayVString;
             panelInfo.push({
                 t,
-                children: t.date(),
+                children: t.getDate(),
                 current,
                 active,
                 disabled,
@@ -72,7 +73,7 @@ const getDays = (
 const defaultWeekdays = DefaultContext.locale.weekdays;
 
 const DateBody = ({ value, onChange, current, onCurrentChange, today, disabledDate }: DateBodyProps) => {
-    const { locale, prefixCls } = useContext(CalendarContext);
+    const { locale, prefixCls, onChangeWhenPrevNextClick } = useContext(CalendarContext);
     const weekdays = locale?.weekdays || defaultWeekdays;
 
     const cls = useMemo(() => {
@@ -102,13 +103,15 @@ const DateBody = ({ value, onChange, current, onCurrentChange, today, disabledDa
             const t = panelInfo[index];
             if (t.current !== 'current') {
                 onCurrentChange(t.t);
-            } else if (t.disabled) {
+            }
+            if (t.disabled) {
                 return;
-            } else {
+            }
+            if (onChangeWhenPrevNextClick || t.current === 'current') {
                 onChange(t.t);
             }
         },
-        [onChange, onCurrentChange, panelInfo]
+        [onChange, onChangeWhenPrevNextClick, onCurrentChange, panelInfo]
     );
 
     return (
