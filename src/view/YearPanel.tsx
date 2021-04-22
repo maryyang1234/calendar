@@ -11,14 +11,16 @@ type YearPanelProps = SharedPanelProps;
 const C_COL = 3;
 const C_ROW = 4;
 
-const YearPanel = ({ value, onChange, current, onCurrentChange }: YearPanelProps) => {
+const YearPanel = ({ now, value, onChange, current, onCurrentChange }: YearPanelProps) => {
     const baseYear = useMemo(() => ((current.getFullYear() / 10) | 0) * 10, [current]);
     const valueYear = useMemo(() => value?.getFullYear(), [value]);
+    const nowYear = useMemo(() => now?.getFullYear(), [now]);
     const { prefixCls, onlyValidYear, onChangeWhenPrevNextClick } = useContext(CalendarContext);
 
     const cells = useMemo(() => {
         const cells = [];
         const activeCls = prefixCls + '-active';
+        const nowCls = prefixCls + '-now';
         const prevCls = prefixCls + '-prev';
         const nextCls = prefixCls + '-next';
         const start = onlyValidYear ? 0 : -1;
@@ -27,16 +29,22 @@ const YearPanel = ({ value, onChange, current, onCurrentChange }: YearPanelProps
             const year = baseYear + i;
             const active = valueYear === year;
             const current = i < 0 ? 'prev' : i > 9 ? 'next' : 'current';
+            const isNow = year === nowYear;
             const cellInfo = {
                 children: year,
                 current,
                 year,
-                className: classnames(active && activeCls, current === 'prev' && prevCls, current === 'next' && nextCls)
+                className: classnames(
+                    active && activeCls,
+                    isNow && nowCls,
+                    current === 'prev' && prevCls,
+                    current === 'next' && nextCls
+                )
             };
             cells.push(cellInfo);
         }
         return cells;
-    }, [onlyValidYear, prefixCls, baseYear, valueYear]);
+    }, [prefixCls, onlyValidYear, baseYear, valueYear, nowYear]);
 
     const onYearClick = useCallback(
         (index: number) => {

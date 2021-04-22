@@ -12,6 +12,7 @@ import classnames from 'src/util/classnames';
 type YearProps = SharedCalendarProps;
 
 const Year = ({
+    now,
     value: _value,
     defaultValue = null,
     onChange: _onChange,
@@ -22,15 +23,16 @@ const Year = ({
     className,
     ...rest
 }: YearProps) => {
-    const now = useMemo(() => new Date(), []);
+    const d = useMemo(() => new Date(), []);
     const [value, onChange] = useUncontrolled<TDate | null, Date>(_value, defaultValue, _onChange);
     const standardValue = useMemo(() => standard(value), [value]);
     const [current, onCurrentChange] = useUncontrolled<TDate, Date>(
         _current,
-        defaultCurrent || value || now,
+        defaultCurrent || value || d,
         _onCurrentChange
     );
     const standardCurrent = useMemo(() => standard(current), [current]);
+    const standardNow = useMemo(() => standard(now === undefined ? d : now), [d, now]);
     const [mode, setMode] = useState('year');
     const onModeChange = useCallback((mode: string) => setMode(mode), []);
     const onDecadeChange = useCallback(
@@ -54,7 +56,7 @@ const Year = ({
     return (
         <div {...rest} className={classnames(cls.wrap, cls.year, className)}>
             {mode === 'decade' ? (
-                <Decade value={standardValue} defaultCurrent={current} onChange={onDecadeChange} />
+                <Decade now={standardNow} value={standardValue} defaultCurrent={current} onChange={onDecadeChange} />
             ) : (
                 <div className={cls.yearWrap}>
                     <Header
@@ -65,6 +67,7 @@ const Year = ({
                     />
                     <div className={cls.body}>
                         <YearPanel
+                            now={standardNow}
                             value={standardValue === null ? undefined : standardValue}
                             onChange={onChange}
                             current={standardCurrent}

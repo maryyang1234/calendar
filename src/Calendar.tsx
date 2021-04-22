@@ -11,14 +11,12 @@ import CalendarContext, { withContext } from 'src/CalendarContext';
 import classnames from 'src/util/classnames';
 
 type CalendarProps = SharedCalendarProps & {
-    // value of today
-    today?: TDate;
     // disable rule
     disabledDate?: (t: TDate) => boolean;
 };
 
 const Calendar = ({
-    today,
+    now,
     value: _value,
     defaultValue = null,
     onChange: _onChange,
@@ -30,16 +28,16 @@ const Calendar = ({
     disabledDate,
     ...rest
 }: CalendarProps) => {
-    const now = useMemo(() => new Date(), []);
+    const d = useMemo(() => new Date(), []);
     const [value, onChange] = useUncontrolled<TDate | null, Date>(_value, defaultValue, _onChange);
     const standardValue = useMemo(() => standard(value), [value]);
     const [current, onCurrentChange] = useUncontrolled<TDate, Date>(
         _current,
-        defaultCurrent || value || now,
+        defaultCurrent || value || d,
         _onCurrentChange
     );
     const standardCurrent = useMemo(() => standard(current), [current]);
-    const standardToday = useMemo(() => standard(today || new Date()), [today]);
+    const standardNow = useMemo(() => standard(now === undefined ? d : now), [d, now]);
     const [mode, setMode] = useState('date');
     const onModeChange = useCallback((mode: string) => setMode(mode), []);
     const onMonthChange = useCallback(
@@ -70,9 +68,21 @@ const Calendar = ({
     return (
         <div {...rest} className={classnames(cls.wrap, cls.date, className)}>
             {mode === 'month' ? (
-                <Month value={standardValue} defaultCurrent={current} onChange={onMonthChange} sidebar={sidebar} />
+                <Month
+                    now={standardNow}
+                    value={standardValue}
+                    defaultCurrent={current}
+                    onChange={onMonthChange}
+                    sidebar={sidebar}
+                />
             ) : mode === 'year' ? (
-                <Year value={standardValue} defaultCurrent={current} onChange={onYearChange} sidebar={sidebar} />
+                <Year
+                    now={standardNow}
+                    value={standardValue}
+                    defaultCurrent={current}
+                    onChange={onYearChange}
+                    sidebar={sidebar}
+                />
             ) : (
                 <div className={cls.dateWrap}>
                     <Header
@@ -83,7 +93,7 @@ const Calendar = ({
                     />
                     <div className={cls.body}>
                         <DatePanel
-                            today={standardToday}
+                            now={standardNow}
                             value={standardValue === null ? undefined : standardValue}
                             onChange={onChange}
                             disabledDate={disabledDate}

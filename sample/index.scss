@@ -31,6 +31,7 @@
     padding: 0.25em 0.5em;
     display: inline-block;
     user-select: none;
+    box-sizing: border-box;
     &.zr-cal-active {
         background: #3860f4;
         color: white;
@@ -44,6 +45,9 @@
         &.zr-cal-active {
             background: #d2d6ea;
         }
+    }
+    &.zr-cal-now {
+        border: 1px solid blue;
     }
     &.zr-cal-cell-empty {
         cursor: default;

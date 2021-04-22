@@ -11,6 +11,7 @@ import classnames from 'src/util/classnames';
 type DecadeProps = SharedCalendarProps;
 
 const Decade = ({
+    now,
     value: _value,
     defaultValue = null,
     onChange: _onChange,
@@ -21,15 +22,16 @@ const Decade = ({
     className,
     ...rest
 }: DecadeProps) => {
-    const now = useMemo(() => new Date(), []);
+    const d = useMemo(() => new Date(), []);
     const [value, onChange] = useUncontrolled<TDate | null, Date>(_value, defaultValue, _onChange);
     const standardValue = useMemo(() => standard(value), [value]);
     const [current, onCurrentChange] = useUncontrolled<TDate, Date>(
         _current,
-        defaultCurrent || value || now,
+        defaultCurrent || value || d,
         _onCurrentChange
-);
+    );
     const standardCurrent = useMemo(() => standard(current), [current]);
+    const standardNow = useMemo(() => standard(now === undefined ? d : now), [d, now]);
     const context = useContext(CalendarContext);
     const cls = useMemo(() => {
         const prefixCls = context.prefixCls;
@@ -47,6 +49,7 @@ const Decade = ({
                 <Header value={standardCurrent} onChange={onCurrentChange} mode="decade" />
                 <div className={cls.body}>
                     <DecadePanel
+                        now={standardNow}
                         value={standardValue === null ? undefined : standardValue}
                         onChange={onChange}
                         current={standardCurrent}

@@ -43,7 +43,7 @@ const App = () => {
     return (
         <div>
             <Calendar onChange={console.log} components={{ Cell: Cell }} disabledDate={disabledDate} />
-            <Month onChange={console.log} />
+            <Month onChange={console.log} now={null} />
             <Year onChange={console.log} onCurrentChange={console.log} />
             <Timer value={now} onChange={console.log} />
             <Timer onChange={console.log} />

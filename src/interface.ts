@@ -21,6 +21,8 @@ export type SharedCalendarProps = Override<
         defaultCurrent?: TDate;
         // callback when current display panel change
         onCurrentChange?: (v: Date) => void;
+        // value of now
+        now?: TDate;
         // render sidebar right to the table
         sidebar?: ReactNode;
     }

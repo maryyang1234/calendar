@@ -13,10 +13,12 @@ const C_ROW = 4;
 
 const defaultMonths = DefaultContext.locale.months;
 
-const MonthPanel = ({ value, onChange, current }: MonthPanelProps) => {
-    const valueMonth = useMemo(() => value?.getMonth(), [value]);
+const MonthPanel = ({ now, value, onChange, current }: MonthPanelProps) => {
     const valueYear = useMemo(() => value?.getFullYear(), [value]);
+    const valueMonth = useMemo(() => value?.getMonth(), [value]);
     const currentYear = useMemo(() => current?.getFullYear(), [current]);
+    const nowYear = useMemo(() => now?.getFullYear(), [now]);
+    const nowMonth = useMemo(() => now?.getMonth(), [now]);
     const { locale, prefixCls } = useContext(CalendarContext);
     const months = locale?.months || defaultMonths;
 
@@ -24,17 +26,18 @@ const MonthPanel = ({ value, onChange, current }: MonthPanelProps) => {
         const count = C_COL * C_ROW;
         const cells = [];
         const activeCls = prefixCls + '-active';
-        const sameYear = currentYear === valueYear;
+        const nowCls = prefixCls + '-now';
         for (let i = 0; i < count; i++) {
-            const active = sameYear && valueMonth === i;
+            const active = currentYear === valueYear && valueMonth === i;
+            const isNow = currentYear === nowYear && nowMonth === i;
             const cellInfo = {
                 children: months[i],
-                className: classnames(active && activeCls)
+                className: classnames(active && activeCls, isNow && nowCls)
             };
             cells.push(cellInfo);
         }
         return cells;
-    }, [prefixCls, currentYear, valueYear, valueMonth, months]);
+    }, [prefixCls, currentYear, valueYear, valueMonth, nowYear, nowMonth, months]);
 
     const onMonthClick = useCallback(
         (index: number) => {

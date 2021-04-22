@@ -93,14 +93,13 @@ const HeaderSwitcherWithoutMemo = ({
                 break;
         }
     }, [type, switchMode]);
-    const context = useContext(CalendarContext);
+    const { prefixCls, components } = useContext(CalendarContext);
     const cls = useMemo(() => {
-        const prefixCls = context.prefixCls;
         return `${prefixCls}-header-switcher ${prefixCls}-header-switcher-${type}`;
-    }, [context.prefixCls, type]);
-    const props = { onClick: handleClick, className: cls, children: display, ...rest };
-    return context.components?.HeaderSwitcher ? (
-        <context.components.HeaderSwitcher mode={mode} type={type} {...props} />
+    }, [prefixCls, type]);
+    const props = { onClick: handleClick, className: cls, children: display, value, ...rest };
+    return components?.HeaderSwitcher ? (
+        <components.HeaderSwitcher mode={mode} type={type} {...props} />
     ) : (
         <span {...props} />
     );

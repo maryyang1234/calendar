@@ -12,6 +12,7 @@ import classnames from 'src/util/classnames';
 type MonthProps = SharedCalendarProps;
 
 const Month = ({
+    now,
     value: _value,
     defaultValue = null,
     onChange: _onChange,
@@ -22,15 +23,16 @@ const Month = ({
     className,
     ...rest
 }: MonthProps) => {
-    const now = useMemo(() => new Date(), []);
+    const d = useMemo(() => new Date(), []);
     const [value, onChange] = useUncontrolled<TDate | null, Date>(_value, defaultValue, _onChange);
     const standardValue = useMemo(() => standard(value), [value]);
     const [current, onCurrentChange] = useUncontrolled<TDate, Date>(
         _current,
-        defaultCurrent || value || now,
+        defaultCurrent || value || d,
         _onCurrentChange
     );
     const standardCurrent = useMemo(() => standard(current), [current]);
+    const standardNow = useMemo(() => standard(now === undefined ? d : now), [d, now]);
     const [mode, setMode] = useState('month');
     const onModeChange = useCallback((mode: string) => {
         setMode(mode);
@@ -56,7 +58,7 @@ const Month = ({
     return (
         <div {...rest} className={classnames(cls.wrap, cls.month, className)}>
             {mode === 'year' ? (
-                <Year value={standardValue} defaultCurrent={current} onChange={onYearChange} />
+                <Year now={standardNow} value={standardValue} onChange={onYearChange} defaultCurrent={current} />
             ) : (
                 <div className={cls.monthWrap}>
                     <Header
@@ -67,6 +69,7 @@ const Month = ({
                     />
                     <div className={cls.body}>
                         <MonthPanel
+                            now={standardNow}
                             value={standardValue === null ? undefined : standardValue}
                             onChange={onChange}
                             current={standardCurrent}

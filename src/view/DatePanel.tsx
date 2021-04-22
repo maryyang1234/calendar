@@ -8,8 +8,6 @@ import { SharedPanelProps } from 'src/view/interface';
 import TBody from 'src/view/TBody';
 
 type DateBodyProps = SharedPanelProps & {
-    // date of today
-    today?: Date;
     // disable rule
     disabledDate?: (t: TDate, value?: TDate) => boolean;
 };
@@ -21,7 +19,7 @@ const getDays = (
     v: Date,
     cls: Record<string, string>,
     activeV?: Date,
-    today?: Date,
+    now?: Date,
     disabledDate?: DateBodyProps['disabledDate']
 ) => {
     v = new Date(+v);
@@ -35,7 +33,7 @@ const getDays = (
     const firstDayOfPanel = new Date(+firstDayOfMonth - day * 1000 * 60 * 60 * 24);
 
     const activeVString = format(activeV, 'YYYYMMDD');
-    const todayVString = format(today, 'YYYYMMDD');
+    const nowVString = format(now, 'YYYYMMDD');
 
     const min = day;
     const max = day + daysInMonth;
@@ -49,7 +47,7 @@ const getDays = (
             const active = tString === activeVString;
             const current = index < min ? 'prev' : index >= max ? 'next' : 'current';
             const disabled = disabledDate?.(t, activeV);
-            const isToday = tString === todayVString;
+            const isNow = tString === nowVString;
             panelInfo.push({
                 t,
                 children: t.getDate(),
@@ -60,7 +58,7 @@ const getDays = (
                     cls.cell,
                     active && cls.active,
                     disabled && cls.disabled,
-                    isToday && cls.today,
+                    isNow && cls.now,
                     current === 'prev' && cls.prev,
                     current === 'next' && cls.next
                 )
@@ -72,7 +70,7 @@ const getDays = (
 
 const defaultWeekdays = DefaultContext.locale.weekdays;
 
-const DateBody = ({ value, onChange, current, onCurrentChange, today, disabledDate }: DateBodyProps) => {
+const DateBody = ({ value, onChange, current, onCurrentChange, now, disabledDate }: DateBodyProps) => {
     const { locale, prefixCls, onChangeWhenPrevNextClick } = useContext(CalendarContext);
     const weekdays = locale?.weekdays || defaultWeekdays;
 
@@ -83,18 +81,18 @@ const DateBody = ({ value, onChange, current, onCurrentChange, today, disabledDa
             row: prefixCls + '-row',
             cell: prefixCls + '-cell',
             active: prefixCls + '-active',
-            today: prefixCls + '-today',
+            now: prefixCls + '-now',
             disabled: prefixCls + '-disabled',
             prev: prefixCls + '-prev',
             next: prefixCls + '-next'
         };
     }, [prefixCls]);
 
-    const panelInfo = useMemo(() => getDays(current, cls, value, today, disabledDate), [
+    const panelInfo = useMemo(() => getDays(current, cls, value, now, disabledDate), [
         current,
         cls,
         value,
-        today,
+        now,
         disabledDate
     ]);
 
