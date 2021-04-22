@@ -58,7 +58,13 @@ const Month = ({
     return (
         <div {...rest} className={classnames(cls.wrap, cls.month, className)}>
             {mode === 'year' ? (
-                <Year now={standardNow} value={standardValue} onChange={onYearChange} defaultCurrent={current} />
+                <Year
+                    now={standardNow}
+                    value={standardValue}
+                    onChange={onYearChange}
+                    defaultCurrent={current}
+                    sidebar={sidebar}
+                />
             ) : (
                 <div className={cls.monthWrap}>
                     <Header

@@ -56,7 +56,13 @@ const Year = ({
     return (
         <div {...rest} className={classnames(cls.wrap, cls.year, className)}>
             {mode === 'decade' ? (
-                <Decade now={standardNow} value={standardValue} defaultCurrent={current} onChange={onDecadeChange} />
+                <Decade
+                    now={standardNow}
+                    value={standardValue}
+                    defaultCurrent={current}
+                    onChange={onDecadeChange}
+                    sidebar={sidebar}
+                />
             ) : (
                 <div className={cls.yearWrap}>
                     <Header
