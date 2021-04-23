@@ -34,7 +34,9 @@ const ScrollerWithoutMemo = ({ value = 0, steps, onChange, prefixCls }: Scroller
         const scrollerDOM = scroller.current;
         if (!scrollerDOM) return;
         const firstChild = scrollerDOM.childNodes[0] as HTMLDivElement;
-        const childHeight = firstChild.getClientRects()[0].height;
+        const rect = firstChild.getClientRects()?.[0];
+        if (!rect) return;
+        const childHeight = rect.height;
         const scrollTop = scrollerDOM.scrollTop;
         const currentIndex = Math.round(scrollTop / childHeight);
         onChange?.(currentIndex);
@@ -45,7 +47,9 @@ const ScrollerWithoutMemo = ({ value = 0, steps, onChange, prefixCls }: Scroller
         const scrollerDOM = scroller.current;
         if (!scrollerDOM) return;
         const firstChild = scrollerDOM.childNodes[0] as HTMLDivElement;
-        const childHeight = firstChild.getClientRects()[0].height;
+        const rect = firstChild.getClientRects()?.[0];
+        if (!rect) return;
+        const childHeight = rect.height;
 
         scrollerDOM.scrollTop = childHeight * v;
     }, []);
