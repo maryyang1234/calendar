@@ -16,7 +16,7 @@ const DecadePanel = ({ now, value, onChange, current, onCurrentChange, disabledD
     const baseYear = useMemo(() => ((current.getFullYear() / 100) | 0) * 100, [current]);
     const valueYear = useMemo(() => value?.getFullYear(), [value]);
     const nowYear = useMemo(() => now?.getFullYear(), [now]);
-    const { prefixCls, onlyValidDecade } = useContext(CalendarContext);
+    const { prefixCls, onlyValidDecade, onChangeWhenPrevNextClick } = useContext(CalendarContext);
 
     const cells = useMemo(() => {
         const cells = [];
@@ -37,6 +37,7 @@ const DecadePanel = ({ now, value, onChange, current, onCurrentChange, disabledD
             const cellInfo = {
                 children: year + '-' + latestYear,
                 current: isCurrent,
+                disabled,
                 year,
                 className: classnames(
                     active && activeCls,
@@ -55,19 +56,17 @@ const DecadePanel = ({ now, value, onChange, current, onCurrentChange, disabledD
         (index: number) => {
             const cellInfo = cells[index];
             if (!cellInfo) return;
-            let v;
             if (cellInfo.current === 'prev') {
-                v = set(current, baseYear - 100, 'year');
-                onCurrentChange(v);
+                onCurrentChange(set(current, baseYear - 100, 'year'));
             } else if (cellInfo.current === 'next') {
-                v = set(current, baseYear + 100, 'year');
-                onCurrentChange(v);
-            } else {
-                v = set(current, cellInfo.year, 'year');
+                onCurrentChange(set(current, baseYear + 100, 'year'));
             }
-            onChange(v);
+            if (cellInfo.disabled) return;
+            if (cellInfo.current === 'current' || onChangeWhenPrevNextClick) {
+                onChange(set(current, cellInfo.year, 'year'));
+            }
         },
-        [baseYear, cells, current, onChange, onCurrentChange]
+        [baseYear, cells, current, onChange, onChangeWhenPrevNextClick, onCurrentChange]
     );
 
     const cls = useMemo(

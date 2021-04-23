@@ -36,6 +36,7 @@ const YearPanel = ({ now, value, onChange, current, onCurrentChange, disabledYea
             const cellInfo = {
                 children: year,
                 current: isCurrent,
+                disabled,
                 year,
                 className: classnames(
                     active && activeCls,
@@ -59,6 +60,7 @@ const YearPanel = ({ now, value, onChange, current, onCurrentChange, disabledYea
             } else if (cellInfo.current === 'next') {
                 onCurrentChange(set(current, baseYear + 10, 'year'));
             }
+            if (cellInfo.disabled) return;
             if (cellInfo.current === 'current' || onChangeWhenPrevNextClick) {
                 onChange(set(current, cellInfo.year, 'year'));
             }

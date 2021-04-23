@@ -35,6 +35,7 @@ const MonthPanel = ({ now, value, onChange, current, disabledMonth }: MonthPanel
             const disabled = disabledMonth?.(set(current, i, 'month'), value);
             const cellInfo = {
                 children: months[i],
+                disabled,
                 className: classnames(active && activeCls, isNow && nowCls, disabled && disabledCls)
             };
             cells.push(cellInfo);
@@ -44,9 +45,11 @@ const MonthPanel = ({ now, value, onChange, current, disabledMonth }: MonthPanel
 
     const onMonthClick = useCallback(
         (index: number) => {
+            const cellInfo = cells[index];
+            if (cellInfo.disabled) return;
             onChange(set(current, index, 'month'));
         },
-        [current, onChange]
+        [cells, current, onChange]
     );
 
     const cls = useMemo(
