@@ -16,7 +16,9 @@ const YearPanel = ({ now, value, onChange, current, onCurrentChange, disabledYea
     const baseYear = useMemo(() => ((current.getFullYear() / 10) | 0) * 10, [current]);
     const valueYear = useMemo(() => value?.getFullYear(), [value]);
     const nowYear = useMemo(() => now?.getFullYear(), [now]);
-    const { prefixCls, onlyValidYear, onChangeWhenPrevNextClick } = useContext(CalendarContext);
+    const { prefixCls, onlyValidYear, onChangeWhenPrevNextClick, disabledPrevNextClickWhenDisabled } = useContext(
+        CalendarContext
+    );
 
     const cells = useMemo(() => {
         const cells = [];
@@ -55,6 +57,7 @@ const YearPanel = ({ now, value, onChange, current, onCurrentChange, disabledYea
         (index: number) => {
             const cellInfo = cells[index];
             if (!cellInfo) return;
+            if (cellInfo.disabled && disabledPrevNextClickWhenDisabled) return;
             if (cellInfo.current === 'prev') {
                 onCurrentChange(set(current, baseYear - 10, 'year'));
             } else if (cellInfo.current === 'next') {
@@ -65,7 +68,15 @@ const YearPanel = ({ now, value, onChange, current, onCurrentChange, disabledYea
                 onChange(set(current, cellInfo.year, 'year'));
             }
         },
-        [baseYear, cells, current, onChange, onChangeWhenPrevNextClick, onCurrentChange]
+        [
+            baseYear,
+            cells,
+            current,
+            disabledPrevNextClickWhenDisabled,
+            onChange,
+            onChangeWhenPrevNextClick,
+            onCurrentChange
+        ]
     );
 
     const cls = useMemo(

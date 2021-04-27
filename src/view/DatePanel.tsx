@@ -71,7 +71,9 @@ const getDays = (
 const defaultWeekdays = DefaultContext.locale.weekdays;
 
 const DateBody = ({ value, onChange, current, onCurrentChange, now, disabledDate }: DateBodyProps) => {
-    const { locale, prefixCls, onChangeWhenPrevNextClick } = useContext(CalendarContext);
+    const { locale, prefixCls, onChangeWhenPrevNextClick, disabledPrevNextClickWhenDisabled } = useContext(
+        CalendarContext
+    );
     const weekdays = locale?.weekdays || defaultWeekdays;
 
     const cls = useMemo(() => {
@@ -99,6 +101,7 @@ const DateBody = ({ value, onChange, current, onCurrentChange, now, disabledDate
     const onDateClick = useCallback(
         (index: number) => {
             const t = panelInfo[index];
+            if (t.disabled && disabledPrevNextClickWhenDisabled) return;
             if (t.current !== 'current') {
                 onCurrentChange(t.t);
             }
@@ -109,7 +112,7 @@ const DateBody = ({ value, onChange, current, onCurrentChange, now, disabledDate
                 onChange(t.t);
             }
         },
-        [onChange, onChangeWhenPrevNextClick, onCurrentChange, panelInfo]
+        [disabledPrevNextClickWhenDisabled, onChange, onChangeWhenPrevNextClick, onCurrentChange, panelInfo]
     );
 
     return (

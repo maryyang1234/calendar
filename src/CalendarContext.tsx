@@ -18,6 +18,8 @@ export interface Context {
     onlyValidDecade?: boolean;
     // onChange when prev, next click
     onChangeWhenPrevNextClick?: boolean;
+    // disabled prev and next when disabled
+    disabledPrevNextClickWhenDisabled?: boolean;
 }
 
 export const DefaultContext: Required<Context> = {
@@ -27,7 +29,8 @@ export const DefaultContext: Required<Context> = {
     monthBeforeYear: true,
     onlyValidYear: true,
     onlyValidDecade: true,
-    onChangeWhenPrevNextClick: true
+    onChangeWhenPrevNextClick: true,
+    disabledPrevNextClickWhenDisabled: true
 };
 
 export type ContextKeys = keyof Context;

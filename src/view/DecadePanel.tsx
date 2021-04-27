@@ -16,7 +16,9 @@ const DecadePanel = ({ now, value, onChange, current, onCurrentChange, disabledD
     const baseYear = useMemo(() => ((current.getFullYear() / 100) | 0) * 100, [current]);
     const valueYear = useMemo(() => value?.getFullYear(), [value]);
     const nowYear = useMemo(() => now?.getFullYear(), [now]);
-    const { prefixCls, onlyValidDecade, onChangeWhenPrevNextClick } = useContext(CalendarContext);
+    const { prefixCls, onlyValidDecade, onChangeWhenPrevNextClick, disabledPrevNextClickWhenDisabled } = useContext(
+        CalendarContext
+    );
 
     const cells = useMemo(() => {
         const cells = [];
@@ -56,6 +58,7 @@ const DecadePanel = ({ now, value, onChange, current, onCurrentChange, disabledD
         (index: number) => {
             const cellInfo = cells[index];
             if (!cellInfo) return;
+            if (cellInfo.disabled && disabledPrevNextClickWhenDisabled) return;
             if (cellInfo.current === 'prev') {
                 onCurrentChange(set(current, baseYear - 100, 'year'));
             } else if (cellInfo.current === 'next') {
@@ -66,7 +69,15 @@ const DecadePanel = ({ now, value, onChange, current, onCurrentChange, disabledD
                 onChange(set(current, cellInfo.year, 'year'));
             }
         },
-        [baseYear, cells, current, onChange, onChangeWhenPrevNextClick, onCurrentChange]
+        [
+            baseYear,
+            cells,
+            current,
+            disabledPrevNextClickWhenDisabled,
+            onChange,
+            onChangeWhenPrevNextClick,
+            onCurrentChange
+        ]
     );
 
     const cls = useMemo(
