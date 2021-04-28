@@ -11,6 +11,7 @@ interface TBodyProps {
     cells: {
         className: string;
         children: ReactNode;
+        disabled?: boolean;
     }[];
     // callback when cell click
     onCellClick: (cellIndex: number) => void;
@@ -47,7 +48,9 @@ const TBody = ({ cells, onCellClick, col, row, mode }: TBodyProps) => {
             body: prefixCls + '-tbody',
             row: prefixCls + '-row',
             cell: prefixCls + '-cell',
-            emptyCell: prefixCls + '-cell-empty'
+            emptyCell: prefixCls + '-cell-empty',
+            firstDisabledCell: prefixCls + '-cell-disabled-first',
+            lastDisabledCell: prefixCls + '-cell-disabled-last'
         }),
         [prefixCls]
     );
@@ -63,13 +66,34 @@ const TBody = ({ cells, onCellClick, col, row, mode }: TBodyProps) => {
         const info = [];
         for (let i = 0; i < row; i++) {
             const group = [];
+            let first = true;
             for (let j = 0; j < col; j++) {
                 const index = i * col + j;
                 const cellInfo = cells[index];
+                let isFirstDisabled = false;
+                let isLastDisabled = false;
+                if (cellInfo?.disabled) {
+                    if (first) {
+                        isFirstDisabled = true;
+                        first = false;
+                    }
+                    const nextCellInfo = cells[index + 1];
+                    if (j >= col - 1 || !nextCellInfo?.disabled) {
+                        isLastDisabled = true;
+                    }
+                } else {
+                    first = true;
+                }
                 group.push(
                     <Cell
                         key={index}
-                        className={classnames(cls.cell, cellInfo?.className, !cellInfo && cls.emptyCell)}
+                        className={classnames(
+                            cls.cell,
+                            !cellInfo && cls.emptyCell,
+                            cellInfo?.className,
+                            isFirstDisabled && cls.firstDisabledCell,
+                            isLastDisabled && cls.lastDisabledCell
+                        )}
                         index={index}
                         onClick={handleClick}
                         mode={mode}
