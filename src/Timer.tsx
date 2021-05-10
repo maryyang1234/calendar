@@ -1,8 +1,37 @@
 import React, { HTMLAttributes, memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import raf from 'raf';
 
 import classnames from 'src/util/classnames';
 import useUncontrolled from 'src/useUncontrolled';
 import { Override } from 'src/interface';
+
+const scrollMap: { [key: number]: number } = {};
+
+const _scrollTo = (element: Element, to: number, duration: number, uid: number, tag: number) => {
+    if (tag != scrollMap[uid]) return;
+    if (duration <= 0) {
+        raf(() => {
+            console.log(to, duration, uid, tag);
+
+            element.scrollTop = to;
+        });
+        return;
+    }
+    const difference = to - element.scrollTop;
+    const perTick = (difference / duration) * 10;
+
+    raf(() => {
+        element.scrollTop += perTick;
+        if (element.scrollTop === to) return;
+        _scrollTo(element, to, duration - 10, uid, tag);
+    });
+};
+
+const scrollTo = (element: Element, to: number, duration: number, uid: number) => {
+    console.log(to, duration, uid);
+
+    _scrollTo(element, to, duration, uid, (scrollMap[uid] = (scrollMap[uid] | 0) + 1));
+};
 
 const StepperWithoutMemo = ({
     index,
@@ -16,6 +45,8 @@ const StepperWithoutMemo = ({
 };
 const Stepper = memo(StepperWithoutMemo);
 
+let _uid = 0;
+
 interface ScrollerInterface {
     value?: number;
     steps: (number | string)[];
@@ -25,9 +56,10 @@ interface ScrollerInterface {
 const ScrollerWithoutMemo = ({ value = 0, steps, onChange, prefixCls }: ScrollerInterface) => {
     const [scrollLock, setScrollLock] = useState(true);
     const scroller = useRef<HTMLDivElement>(null);
+    const uid = useMemo(() => _uid++, []);
 
     // save value into ref
-    const valueRef = useRef(value);
+    const valueRef = useRef(0);
 
     // update value from scrollerDOM scrollTop and trigger onChange
     const updateValue = useCallback(() => {
@@ -43,16 +75,19 @@ const ScrollerWithoutMemo = ({ value = 0, steps, onChange, prefixCls }: Scroller
     }, [onChange]);
 
     // update scrollerDom scroll bar to value
-    const updateScroll = useCallback((v: number) => {
-        const scrollerDOM = scroller.current;
-        if (!scrollerDOM) return;
-        const firstChild = scrollerDOM.childNodes[0] as HTMLDivElement;
-        const rect = firstChild.getClientRects()?.[0];
-        if (!rect) return;
-        const childHeight = rect.height;
+    const updateScroll = useCallback(
+        (v: number, duration = 100) => {
+            const scrollerDOM = scroller.current;
+            if (!scrollerDOM) return;
+            const firstChild = scrollerDOM.childNodes[0] as HTMLDivElement;
+            const rect = firstChild.getClientRects()?.[0];
+            if (!rect) return;
+            const childHeight = rect.height;
 
-        scrollerDOM.scrollTop = childHeight * v;
-    }, []);
+            scrollTo(scrollerDOM, childHeight * v, duration, uid);
+        },
+        [uid]
+    );
 
     useEffect(() => {
         const scrollerDOM = scroller.current;
@@ -73,7 +108,7 @@ const ScrollerWithoutMemo = ({ value = 0, steps, onChange, prefixCls }: Scroller
             // lock scroll
             setScrollLock(true);
             // use valueRef value to avoid bind/unbind frequently
-            updateScroll(valueRef.current);
+            updateScroll(valueRef.current, 0);
         };
 
         scrollerDOM.addEventListener(`scroll`, onScroll);
@@ -87,6 +122,7 @@ const ScrollerWithoutMemo = ({ value = 0, steps, onChange, prefixCls }: Scroller
     }, [updateScroll, updateValue, scrollLock]);
 
     useEffect(() => {
+        if (valueRef.current === value) return;
         // update value ref
         valueRef.current = value;
         if (!scrollLock) return;
