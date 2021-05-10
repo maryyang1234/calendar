@@ -11,8 +11,6 @@ const _scrollTo = (element: Element, to: number, duration: number, uid: number, 
     if (tag != scrollMap[uid]) return;
     if (duration <= 0) {
         raf(() => {
-            console.log(to, duration, uid, tag);
-
             element.scrollTop = to;
         });
         return;
@@ -28,8 +26,6 @@ const _scrollTo = (element: Element, to: number, duration: number, uid: number, 
 };
 
 const scrollTo = (element: Element, to: number, duration: number, uid: number) => {
-    console.log(to, duration, uid);
-
     _scrollTo(element, to, duration, uid, (scrollMap[uid] = (scrollMap[uid] | 0) + 1));
 };
 
