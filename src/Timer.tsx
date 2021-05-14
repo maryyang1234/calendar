@@ -221,7 +221,14 @@ const Timer = ({
         prefixCls?: string;
     }
 >) => {
-    const d = useMemo(() => new Date(), []);
+    const d = useMemo(() => {
+        const d = new Date();
+        d.setHours(0);
+        d.setMinutes(0);
+        d.setSeconds(0);
+        d.setMilliseconds(0);
+        return d;
+    }, []);
     const [value, onChange] = useUncontrolled(_value, defaultValue, _onChange);
     const stepsArray = useMemo(() => mode.map(v => StepsMap[v]), [mode]);
     const valueArray = useMemo(() => {
