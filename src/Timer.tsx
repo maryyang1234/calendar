@@ -200,7 +200,7 @@ const TypeMap: Record<FormatString, TypeString> = {
 
 const Timer = ({
     value: _value,
-    defaultValue = new Date(),
+    defaultValue,
     onChange: _onChange,
     mode = ['HH', 'mm', 'ss'],
     prefixCls = 'zr-timer',
@@ -221,14 +221,20 @@ const Timer = ({
         prefixCls?: string;
     }
 >) => {
+    const d = useMemo(() => new Date(), []);
     const [value, onChange] = useUncontrolled(_value, defaultValue, _onChange);
     const stepsArray = useMemo(() => mode.map(v => StepsMap[v]), [mode]);
     const valueArray = useMemo(() => {
-        const date = new Date(value);
-        const hour = date.getHours(),
-            minute = date.getMinutes(),
-            second = date.getSeconds();
-        const valueMap = { hour, minute, second };
+        let valueMap: { hour: number; minute: number; second: number };
+        if (value == null) {
+            valueMap = { hour: 0, minute: 0, second: 0 };
+        } else {
+            const date = new Date(value);
+            const hour = date.getHours(),
+                minute = date.getMinutes(),
+                second = date.getSeconds();
+            valueMap = { hour, minute, second };
+        }
         return mode.map(v => valueMap[TypeMap[v]]);
     }, [value, mode]);
 
@@ -240,24 +246,24 @@ const Timer = ({
 
     const onHourChange = useCallback(
         (hour: number) => {
-            const date = new Date(valueRef.current);
+            const date = new Date(valueRef.current == null ? d : valueRef.current);
             onChange(new Date(date.setHours(hour)));
         },
-        [onChange]
+        [d, onChange]
     );
     const onMinuteChange = useCallback(
-        (hour: number) => {
-            const date = new Date(valueRef.current);
-            onChange(new Date(date.setMinutes(hour)));
+        (minute: number) => {
+            const date = new Date(valueRef.current == null ? d : valueRef.current);
+            onChange(new Date(date.setMinutes(minute)));
         },
-        [onChange]
+        [d, onChange]
     );
     const onSecondChange = useCallback(
-        (hour: number) => {
-            const date = new Date(valueRef.current);
-            onChange(new Date(date.setSeconds(hour)));
+        (second: number) => {
+            const date = new Date(valueRef.current == null ? d : valueRef.current);
+            onChange(new Date(date.setSeconds(second)));
         },
-        [onChange]
+        [d, onChange]
     );
 
     const callbackMap = { hour: onHourChange, minute: onMinuteChange, second: onSecondChange };

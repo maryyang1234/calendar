@@ -108,6 +108,15 @@ body {
     width: 12em;
 }
 
+@-moz-document url-prefix() {
+    .zr-timer-scroller:after {
+        content: ' ';
+        visibility: hidden;
+        height: 8em;
+        display: block;
+    }
+}
+
 .zr-timer {
     display: flex;
     .zr-timer-wrap {
@@ -115,7 +124,7 @@ body {
         display: flex;
         border: 1px solid #ccc;
         position: relative;
-        &::after {
+        &:after {
             content: ' ';
             display: block;
             position: absolute;
