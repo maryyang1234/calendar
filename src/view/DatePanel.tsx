@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useContext, useMemo } from 'react';
+import React, { memo, useCallback, useContext, useEffect, useMemo, useRef } from 'react';
 
 import { DisabledFunc } from 'src/interface';
 import { add, format, getDaysInMonth, set } from 'src/util/date';
@@ -6,6 +6,8 @@ import classnames from 'src/util/classnames';
 import CalendarContext, { DefaultContext } from 'src/CalendarContext';
 import { SharedPanelProps } from 'src/view/interface';
 import TBody from 'src/view/TBody';
+
+import getChangedValue from './getChangedValue';
 
 type DateBodyProps = SharedPanelProps & {
     // disable rule
@@ -48,8 +50,15 @@ const getDays = (
             const current = index < min ? 'prev' : index >= max ? 'next' : 'current';
             const disabled = disabledDate?.(t, activeV);
             const isNow = tString === nowVString;
+            const date = t.getDate();
+            const month = t.getMonth();
+            const year = t.getFullYear();
             panelInfo.push({
-                t,
+                value: {
+                    year,
+                    month,
+                    date
+                },
                 children: t.getDate(),
                 current,
                 active,
@@ -75,6 +84,14 @@ const DateBody = ({ value, onChange, current, onCurrentChange, now, disabledDate
         CalendarContext
     );
     const weekdays = locale?.weekdays || defaultWeekdays;
+
+    // use ref to reduce reRender
+    const currentRef = useRef(current);
+    const valueRef = useRef(value);
+    useEffect(() => {
+        currentRef.current = current;
+        valueRef.current = value;
+    }, [current, value]);
 
     const cls = useMemo(() => {
         return {
@@ -102,15 +119,10 @@ const DateBody = ({ value, onChange, current, onCurrentChange, now, disabledDate
         (index: number) => {
             const t = panelInfo[index];
             if (t.disabled && disabledPrevNextClickWhenDisabled) return;
-            if (t.current !== 'current') {
-                onCurrentChange(t.t);
-            }
-            if (t.disabled) {
-                return;
-            }
-            if (onChangeWhenPrevNextClick || t.current === 'current') {
-                onChange(t.t);
-            }
+            const changedValue = getChangedValue(t.value, currentRef.current, valueRef.current);
+            if (t.current !== 'current') onCurrentChange(changedValue);
+            if (t.disabled) return;
+            if (onChangeWhenPrevNextClick || t.current === 'current') onChange(changedValue);
         },
         [disabledPrevNextClickWhenDisabled, onChange, onChangeWhenPrevNextClick, onCurrentChange, panelInfo]
     );

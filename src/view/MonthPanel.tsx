@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useContext, useMemo } from 'react';
+import React, { memo, useCallback, useContext, useEffect, useMemo, useRef } from 'react';
 
 import { set } from 'src/util/date';
 import CalendarContext, { DefaultContext } from 'src/CalendarContext';
@@ -6,6 +6,8 @@ import classnames from 'src/util/classnames';
 import { SharedPanelProps } from 'src/view/interface';
 import TBody from 'src/view/TBody';
 import { DisabledFunc } from 'src/interface';
+
+import getChangedValue from './getChangedValue';
 
 type MonthPanelProps = Omit<SharedPanelProps, 'onCurrentChange'> & { disabledMonth?: DisabledFunc };
 
@@ -23,6 +25,14 @@ const MonthPanel = ({ now, value, onChange, current, disabledMonth }: MonthPanel
     const { locale, prefixCls } = useContext(CalendarContext);
     const months = locale?.months || defaultMonths;
 
+    // use ref to reduce reRender
+    const currentRef = useRef(current);
+    const valueRef = useRef(value);
+    useEffect(() => {
+        currentRef.current = current;
+        valueRef.current = value;
+    }, [current, value]);
+
     const cells = useMemo(() => {
         const count = C_COL * C_ROW;
         const cells = [];
@@ -36,6 +46,7 @@ const MonthPanel = ({ now, value, onChange, current, disabledMonth }: MonthPanel
             const cellInfo = {
                 children: months[i],
                 disabled,
+                value: { year: currentYear, month: i },
                 className: classnames(active && activeCls, isNow && nowCls, disabled && disabledCls)
             };
             cells.push(cellInfo);
@@ -47,9 +58,10 @@ const MonthPanel = ({ now, value, onChange, current, disabledMonth }: MonthPanel
         (index: number) => {
             const cellInfo = cells[index];
             if (cellInfo.disabled) return;
-            onChange(set(current, index, 'month'));
+            const changedValue = getChangedValue(cellInfo.value, currentRef.current, valueRef.current);
+            onChange(changedValue);
         },
-        [cells, current, onChange]
+        [cells, onChange]
     );
 
     const cls = useMemo(

@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useContext, useMemo } from 'react';
+import React, { memo, useCallback, useContext, useEffect, useMemo, useRef } from 'react';
 
 import CalendarContext from 'src/CalendarContext';
 import { DisabledFunc } from 'src/interface';
@@ -6,6 +6,8 @@ import classnames from 'src/util/classnames';
 import { set } from 'src/util/date';
 import { SharedPanelProps } from 'src/view/interface';
 import TBody from 'src/view/TBody';
+
+import getChangedValue from './getChangedValue';
 
 type YearPanelProps = SharedPanelProps & { disabledYear?: DisabledFunc };
 
@@ -19,6 +21,14 @@ const YearPanel = ({ now, value, onChange, current, onCurrentChange, disabledYea
     const { prefixCls, onlyValidYear, onChangeWhenPrevNextClick, disabledPrevNextClickWhenDisabled } = useContext(
         CalendarContext
     );
+
+    // use ref to reduce reRender
+    const currentRef = useRef(current);
+    const valueRef = useRef(value);
+    useEffect(() => {
+        currentRef.current = current;
+        valueRef.current = value;
+    }, [current, value]);
 
     const cells = useMemo(() => {
         const cells = [];
@@ -65,7 +75,8 @@ const YearPanel = ({ now, value, onChange, current, onCurrentChange, disabledYea
             }
             if (cellInfo.disabled) return;
             if (cellInfo.current === 'current' || onChangeWhenPrevNextClick) {
-                onChange(set(current, cellInfo.year, 'year'));
+                const changedValue = getChangedValue({ year: cellInfo.year }, currentRef.current, valueRef.current);
+                onChange(changedValue);
             }
         },
         [
