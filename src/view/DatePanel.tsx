@@ -64,7 +64,6 @@ const getDays = (
                 active,
                 disabled,
                 className: classnames(
-                    cls.cell,
                     active && cls.active,
                     disabled && cls.disabled,
                     isNow && cls.now,
