@@ -1,33 +1,8 @@
 import React, { HTMLAttributes, memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import raf from 'raf';
 
 import classnames from 'src/util/classnames';
 import useUncontrolled from 'src/useUncontrolled';
 import { Override } from 'src/interface';
-
-const scrollMap: { [key: number]: number } = {};
-
-const _scrollTo = (element: Element, to: number, duration: number, uid: number, tag: number) => {
-    if (tag != scrollMap[uid]) return;
-    if (duration <= 0) {
-        raf(() => {
-            element.scrollTop = to;
-        });
-        return;
-    }
-    const difference = to - element.scrollTop;
-    const perTick = (difference / duration) * 10;
-
-    raf(() => {
-        element.scrollTop += perTick;
-        if (element.scrollTop === to) return;
-        _scrollTo(element, to, duration - 10, uid, tag);
-    });
-};
-
-const scrollTo = (element: Element, to: number, duration: number, uid: number) => {
-    _scrollTo(element, to, duration, uid, (scrollMap[uid] = (scrollMap[uid] | 0) + 1));
-};
 
 const StepperWithoutMemo = ({
     index,
@@ -43,13 +18,24 @@ const Stepper = memo(StepperWithoutMemo);
 
 let _uid = 0;
 
+interface ScrollTo {
+    (element: Element, to: number, duration: number, uid: number): void;
+}
+
 interface ScrollerInterface {
     value?: number;
     steps: (number | string)[];
     onChange?: (v: number) => void;
     prefixCls: string;
+    scrollTo?: ScrollTo;
 }
-const ScrollerWithoutMemo = ({ value = 0, steps, onChange, prefixCls }: ScrollerInterface) => {
+const defaultScrollTo = (element: Element, to: number) => {
+    console.log(element, to);
+
+    element.scrollTop = to;
+};
+
+const ScrollerWithoutMemo = ({ value = 0, steps, onChange, prefixCls, scrollTo }: ScrollerInterface) => {
     const [scrollLock, setScrollLock] = useState(true);
     const scroller = useRef<HTMLDivElement>(null);
     const uid = useMemo(() => _uid++, []);
@@ -80,9 +66,14 @@ const ScrollerWithoutMemo = ({ value = 0, steps, onChange, prefixCls }: Scroller
             if (!rect) return;
             const childHeight = rect.height;
 
-            scrollTo(scrollerDOM, childHeight * v, duration, uid);
+            (typeof scrollTo === 'function' ? scrollTo : defaultScrollTo)?.(
+                scrollerDOM,
+                childHeight * v,
+                duration,
+                uid
+            );
         },
-        [uid]
+        [scrollTo, uid]
     );
 
     useEffect(() => {
@@ -198,13 +189,14 @@ const TypeMap: Record<FormatString, TypeString> = {
     ss: 'second'
 };
 
-const Timer = ({
+const Time = ({
     value: _value,
     defaultValue,
     onChange: _onChange,
     mode = ['HH', 'mm', 'ss'],
-    prefixCls = 'zr-timer',
+    prefixCls = 'zr-time',
     className,
+    scrollTo,
     ...rest
 }: Override<
     HTMLAttributes<HTMLDivElement>,
@@ -215,10 +207,12 @@ const Timer = ({
         defaultValue?: Date;
         // callback when user change
         onChange?: (d: Date) => void;
-        // change display of timer
+        // change display of time
         mode?: ('HH' | 'H' | 'mm' | 'm' | 'ss' | 's')[];
         // custom prefix className
         prefixCls?: string;
+        // scroll to
+        scrollTo?: ScrollTo;
     }
 >) => {
     const d = useMemo(() => {
@@ -287,6 +281,7 @@ const Timer = ({
                         onChange={callbackMap[TypeMap[mode]]}
                         steps={steps}
                         prefixCls={prefixCls}
+                        scrollTo={scrollTo}
                     />
                 );
             })}
@@ -294,4 +289,4 @@ const Timer = ({
     );
 };
 
-export default memo(Timer);
+export default memo(Time);

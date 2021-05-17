@@ -109,7 +109,7 @@ body {
 }
 
 @-moz-document url-prefix() {
-    .zr-timer-scroller:after {
+    .zr-time-scroller:after {
         content: ' ';
         visibility: hidden;
         height: 8em;
@@ -117,9 +117,9 @@ body {
     }
 }
 
-.zr-timer {
+.zr-time {
     display: flex;
-    .zr-timer-wrap {
+    .zr-time-wrap {
         overflow: hidden;
         display: flex;
         border: 1px solid #ccc;
@@ -136,7 +136,7 @@ body {
             border-width: 1px 0;
             pointer-events: none;
         }
-        .zr-timer-scroller {
+        .zr-time-scroller {
             height: 1.5em;
             padding: 8em 0;
             width: 3.5em;
@@ -145,16 +145,21 @@ body {
                 overflow-y: scroll;
             }
 
-            .zr-timer-stepper {
+            .zr-time-stepper {
                 width: 3em;
                 text-align: center;
                 line-height: 1.5em;
                 // scroll-snap-align: center;
                 user-select: none;
-                &.zr-timer-active {
+                &.zr-time-active {
                     font-weight: bold;
                 }
             }
         }
+    }
+}
+.zr-time-css {
+    .zr-time-scroller {
+        scroll-behavior: smooth;
     }
 }

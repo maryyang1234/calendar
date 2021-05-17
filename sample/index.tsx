@@ -1,10 +1,35 @@
 import React, { HTMLAttributes, useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
 import moment from 'moment';
+import raf from 'raf';
 
-import { Calendar, Month, Year, Timer } from '../src';
+import { Calendar, Month, Year, Time } from '../src';
 import { Mode, TDate } from '../src/interface';
 import './index.scss';
+
+const scrollMap: { [key: number]: number } = {};
+
+const _scrollTo = (element: Element, to: number, duration: number, uid: number, tag: number) => {
+    if (tag != scrollMap[uid]) return;
+    if (duration <= 0) {
+        raf(() => {
+            element.scrollTop = to;
+        });
+        return;
+    }
+    const difference = to - element.scrollTop;
+    const perTick = (difference / duration) * 10;
+
+    raf(() => {
+        element.scrollTop += perTick;
+        if (element.scrollTop === to) return;
+        _scrollTo(element, to, duration - 10, uid, tag);
+    });
+};
+
+const scrollTo = (element: Element, to: number, duration: number, uid: number) => {
+    _scrollTo(element, to, duration, uid, (scrollMap[uid] = (scrollMap[uid] | 0) + 1));
+};
 
 const dom = document.getElementById('app');
 
@@ -29,7 +54,7 @@ const Clock = () => {
             clearTimeout(t);
         };
     }, []);
-    return <Timer onChange={console.log} value={timer} />;
+    return <Time onChange={console.log} value={timer} className="zr-time-css" />;
 };
 
 const Cell = ({ children, mode, ...rest }: HTMLAttributes<HTMLDivElement> & { mode: Mode }) => {
@@ -66,8 +91,8 @@ const App = () => {
             />
             <Month onChange={logDateFormat} onCurrentChange={logDateCurrentFormat} now={null} />
             <Year onChange={logDateFormat} onCurrentChange={logDateCurrentFormat} />
-            <Timer value={now} onChange={console.log} />
-            <Timer onChange={console.log} />
+            <Time value={now} onChange={console.log} />
+            <Time onChange={console.log} scrollTo={scrollTo} />
             <Clock />
         </div>
     );
