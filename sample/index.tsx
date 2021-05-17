@@ -1,5 +1,6 @@
 import React, { HTMLAttributes, useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
+import moment from 'moment';
 
 import { Calendar, Month, Year, Timer } from '../src';
 import { Mode, TDate } from '../src/interface';
@@ -8,6 +9,10 @@ import './index.scss';
 const dom = document.getElementById('app');
 
 const now = new Date();
+
+const format = (v: TDate) => {
+    return moment(+v).format('YYYY-MM-DD hh:mm:ss');
+};
 
 const Clock = () => {
     const [timer, setTimer] = useState(() => new Date());
@@ -47,17 +52,20 @@ const disabledYear = (t: TDate) => {
 const disabledDecade = (t: TDate) => {
     return new Date(+t).getFullYear() > new Date().getFullYear();
 };
+const logDateFormat = v => console.log('value', format(v));
+const logDateCurrentFormat = v => console.log('current', format(v));
 
 const App = () => {
     return (
         <div>
             <Calendar
-                onChange={console.log}
+                onChange={logDateFormat}
+                onCurrentChange={logDateCurrentFormat}
                 components={{ Cell: Cell }}
                 disabledRule={{ date: disabledDate, month: disabledMonth, year: disabledYear, decade: disabledDecade }}
             />
-            <Month onChange={console.log} now={null} />
-            <Year onChange={console.log} onCurrentChange={console.log} />
+            <Month onChange={logDateFormat} onCurrentChange={logDateCurrentFormat} now={null} />
+            <Year onChange={logDateFormat} onCurrentChange={logDateCurrentFormat} />
             <Timer value={now} onChange={console.log} />
             <Timer onChange={console.log} />
             <Clock />

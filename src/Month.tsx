@@ -1,13 +1,14 @@
 import React, { memo, useCallback, useContext, useMemo, useState } from 'react';
 
 import MonthPanel from 'src/view/MonthPanel';
+import YearPanel from 'src/view/YearPanel';
+import DecadePanel from 'src/view/DecadePanel';
 import Header from 'src/view/Header';
-import Year from 'src/Year';
 import standard from 'src/util/standard';
-import { DisabledFunc, SharedCalendarProps, TDate } from 'src/interface';
-import useUncontrolled from 'src/useUncontrolled';
-import CalendarContext, { withContext } from 'src/CalendarContext';
 import classnames from 'src/util/classnames';
+import CalendarContext, { withContext } from 'src/CalendarContext';
+import useUncontrolled from 'src/useUncontrolled';
+import { DisabledFunc, Mode, SharedCalendarProps, TDate } from 'src/interface';
 
 type MonthProps = SharedCalendarProps & {
     // disable rule
@@ -41,15 +42,22 @@ const Month = ({
     );
     const standardCurrent = useMemo(() => standard(current), [current]);
     const standardNow = useMemo(() => standard(now === undefined ? d : now), [d, now]);
-    const [mode, setMode] = useState('month');
-    const { month: disabledMonth, ...restDisabledRule } = disabledRule;
-    const onModeChange = useCallback((mode: string) => {
+    const [mode, setMode] = useState<Mode>('month');
+    const { month: disabledMonth, year: disabledYear, decade: disabledDecade } = disabledRule;
+    const onModeChange = useCallback((mode: Mode) => {
         setMode(mode);
     }, []);
     const onYearChange = useCallback(
         (current: Date) => {
             onCurrentChange(current);
             setMode('month');
+        },
+        [onCurrentChange]
+    );
+    const onDecadeChange = useCallback(
+        (current: Date) => {
+            onCurrentChange(current);
+            setMode('year');
         },
         [onCurrentChange]
     );
@@ -64,37 +72,50 @@ const Month = ({
         };
     }, [context.prefixCls]);
 
+    const panel = useMemo(() => {
+        const sharedProps = {
+            now: standardNow,
+            value: standardValue === null ? undefined : standardValue,
+            current: standardCurrent,
+            onCurrentChange
+        };
+        switch (mode) {
+            case 'month': {
+                return <MonthPanel disabledMonth={disabledMonth} onChange={onChange} {...sharedProps} />;
+            }
+            case 'year': {
+                return <YearPanel disabledYear={disabledYear} onChange={onYearChange} {...sharedProps} />;
+            }
+            case 'decade': {
+                return <DecadePanel disabledDecade={disabledDecade} onChange={onDecadeChange} {...sharedProps} />;
+            }
+            default: {
+                return null;
+            }
+        }
+    }, [
+        disabledDecade,
+        disabledMonth,
+        disabledYear,
+        mode,
+        onChange,
+        onCurrentChange,
+        onDecadeChange,
+        onYearChange,
+        standardCurrent,
+        standardNow,
+        standardValue
+    ]);
+
     return (
         <div {...rest} className={classnames(cls.wrap, cls.month, className)}>
-            {mode === 'year' ? (
-                <Year
-                    now={standardNow}
-                    value={standardValue}
-                    onChange={onYearChange}
-                    defaultCurrent={current}
-                    sidebar={sidebar}
-                    disabledRule={restDisabledRule}
-                />
-            ) : (
-                <div className={cls.monthWrap}>
-                    <Header
-                        value={standardCurrent}
-                        onChange={onCurrentChange}
-                        mode="month"
-                        onModeChange={onModeChange}
-                    />
-                    <div className={cls.body}>
-                        <MonthPanel
-                            now={standardNow}
-                            value={standardValue === null ? undefined : standardValue}
-                            onChange={onChange}
-                            current={standardCurrent}
-                            disabledMonth={disabledMonth}
-                        />
-                        {sidebar}
-                    </div>
+            <div className={cls.monthWrap}>
+                <Header value={standardCurrent} onChange={onCurrentChange} mode={mode} onModeChange={onModeChange} />
+                <div className={cls.body}>
+                    {panel}
+                    {sidebar}
                 </div>
-            )}
+            </div>
         </div>
     );
 };
