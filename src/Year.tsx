@@ -42,7 +42,7 @@ const Year = ({
     const standardNow = useMemo(() => standard(now === undefined ? d : now), [d, now]);
     const [mode, setMode] = useState<Mode>('year');
     const { year: disabledYear, decade: disabledDecade } = disabledRule;
-    const onModeChange = useCallback((mode: string) => setMode(mode), []);
+    const onModeChange = useCallback((mode: Mode) => setMode(mode), []);
     const onDecadeChange = useCallback(
         (current: Date) => {
             onCurrentChange(current);
