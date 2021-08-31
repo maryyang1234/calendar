@@ -11,7 +11,7 @@ packageWebpackConfig.output = {
 };
 packageWebpackConfig.mode = 'development';
 packageWebpackConfig.devServer = {
-    port: 9000,
+    port: 9001,
     disableHostCheck: true,
     headers: {
         'Access-Control-Allow-Origin': '*',

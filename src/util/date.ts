@@ -62,10 +62,13 @@ export const add = (d: Date, value: number, unit: Unit) => {
         case 'month': {
             const month = d.getMonth();
             const year = d.getFullYear();
+            const date = d.getDate();
             const newD = new Date(d);
-            const addYear = ((month + value) / 12) | 0;
+            const newYear = (year + (month + value) / 12) | 0;
             const newMonth = (month + value) % 12;
-            newD.setFullYear(year + addYear);
+            const newDate = Math.min(getDaysInMonth(new Date(newYear, newMonth, 1)), date);
+            newD.setDate(newDate);
+            newD.setFullYear(newYear);
             newD.setMonth(newMonth);
             return newD;
         }
@@ -79,7 +82,7 @@ export const add = (d: Date, value: number, unit: Unit) => {
     return d;
 };
 
-const SetMap: Record<Unit, keyof Date> = {
+const SetMap: Record<Unit, 'setSeconds' | 'setMinutes' | 'setHours' | 'setDate' | 'setMonth' | 'setFullYear'> = {
     second: 'setSeconds',
     minute: 'setMinutes',
     hour: 'setHours',
