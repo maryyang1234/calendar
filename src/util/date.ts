@@ -65,7 +65,7 @@ export const add = (d: Date, value: number, unit: Unit) => {
             const date = d.getDate();
             const newD = new Date(d);
             const newYear = (year + (month + value) / 12) | 0;
-            const newMonth = (month + value) % 12;
+            const newMonth = (((month + value) % 12) + 12) % 12;
             const newDate = Math.min(getDaysInMonth(new Date(newYear, newMonth, 1)), date);
             newD.setDate(newDate);
             newD.setFullYear(newYear);
