@@ -55,10 +55,10 @@ export const withContext = <T,>(Component: ComponentType<T>) => {
     const ComponentWithContext = (props: T & Context) => {
         const [context, rest] = pickContext<T & Context>(props);
         const inheritContext = useContext(CalendarContext);
-        const finalContext = useMemo(() => ({ ...DefaultContext, ...inheritContext, ...context }), [
-            context,
-            inheritContext
-        ]);
+        const finalContext = useMemo(
+            () => ({ ...DefaultContext, ...inheritContext, ...context }),
+            [context, inheritContext]
+        );
         return (
             <CalendarContext.Provider value={finalContext}>
                 <Component {...rest} />

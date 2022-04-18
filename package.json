@@ -58,7 +58,6 @@
     "eslint-plugin-react-hooks": "^4.2.0",
     "html-webpack-plugin": "^5.3.0",
     "prettier": "^2.2.1",
-    "rc-trigger": "2.5.3",
     "react": "^16",
     "react-dom": "^16",
     "sass": "^1.32.8",
@@ -69,7 +68,9 @@
     "webpack": "^5.24.4",
     "webpack-bundle-analyzer": "^4.4.0",
     "webpack-cli": "^4.5.0",
-    "webpack-dev-server": "^3.11.2"
+    "webpack-dev-server": "^3.11.2",
+    "dayjs": "1.x",
+    "moment": "2.x"
   },
   "peerDependencies": {
     "react": "^16",
@@ -77,8 +78,6 @@
   },
   "dependencies": {
     "@babel/runtime": "7.x",
-    "core-js": "3.x",
-    "dayjs": "1.x",
-    "moment": "2.x"
+    "core-js": "3.x"
   }
 }

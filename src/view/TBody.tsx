@@ -12,6 +12,11 @@ interface TBodyProps {
         className: string;
         children: ReactNode;
         disabled?: boolean;
+        value: {
+            month: number;
+            year: number;
+            date: number;
+        };
     }[];
     // callback when cell click
     onCellClick: (cellIndex: number) => void;
@@ -25,6 +30,7 @@ const CellWithoutMemo = ({
     index,
     onClick,
     mode,
+    value,
     ...rest
 }: Override<
     HTMLAttributes<HTMLDivElement>,
@@ -32,12 +38,21 @@ const CellWithoutMemo = ({
         index: number;
         onClick: (v: number) => void;
         mode: Mode;
+        value: {
+            month: number;
+            year: number;
+            date: number;
+        };
     }
 >) => {
     const handleCellClick = useCallback(() => onClick(index), [onClick, index]);
     const context = useContext(CalendarContext);
     const props = { onClick: handleCellClick, ...rest };
-    return context.components?.Cell ? <context.components.Cell mode={mode} {...props} /> : <div {...props} />;
+    return context.components?.Cell ? (
+        <context.components.Cell mode={mode} value={value} {...props} />
+    ) : (
+        <div {...props} />
+    );
 };
 const Cell = memo(CellWithoutMemo);
 
@@ -97,6 +112,7 @@ const TBody = ({ cells, onCellClick, col, row, mode }: TBodyProps) => {
                         index={index}
                         onClick={handleClick}
                         mode={mode}
+                        value={cellInfo?.value}
                     >
                         {cellInfo?.children}
                     </Cell>

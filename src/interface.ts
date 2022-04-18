@@ -43,7 +43,16 @@ export type HeaderButtonType =
 export type HeaderSwitcherType = 'date-month' | 'date-year' | 'month' | 'year' | 'decade';
 
 export interface CalendarComponents {
-    Cell?: React.ComponentType<HTMLAttributes<any> & { mode: Mode }>;
+    Cell?: React.ComponentType<
+        HTMLAttributes<any> & {
+            mode: Mode;
+            value?: {
+                month: number;
+                year: number;
+                date: number;
+            };
+        }
+    >;
     HeaderButton?: React.ComponentType<HTMLAttributes<any> & { mode: Mode; type: HeaderButtonType }>;
     HeaderSwitcher?: React.ComponentType<HTMLAttributes<any> & { mode: Mode; type: HeaderSwitcherType }>;
 }
