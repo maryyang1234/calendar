@@ -7,3 +7,14 @@ export { default as Month } from 'src/Month';
 export { default as Year } from 'src/Year';
 
 export { default as Time } from 'src/Time';
+
+export type {
+    CellValue,
+    DateCellValue,
+    MonthCellValue,
+    YearCellValue,
+    DecadeCellValue,
+    CalendarComponents,
+    Mode,
+    TDate
+} from './interface';
