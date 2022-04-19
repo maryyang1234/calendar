@@ -1,22 +1,18 @@
 import React, { HTMLAttributes, memo, ReactNode, useCallback, useContext, useMemo } from 'react';
 
 import CalendarContext from 'src/CalendarContext';
-import { Mode, Override } from 'src/interface';
+import { CellValue, Mode, Override } from 'src/interface';
 import classnames from 'src/util/classnames';
 
-interface TBodyProps {
+interface TBodyProps<T extends Mode> {
     // prefix
-    mode: Mode;
+    mode: T;
     // cell info
     cells: {
         className: string;
         children: ReactNode;
         disabled?: boolean;
-        value: {
-            month: number;
-            year: number;
-            date: number;
-        };
+        value?: CellValue<T>;
     }[];
     // callback when cell click
     onCellClick: (cellIndex: number) => void;
@@ -26,7 +22,7 @@ interface TBodyProps {
     row: number;
 }
 
-const CellWithoutMemo = ({
+function CellWithoutMemo({
     index,
     onClick,
     mode,
@@ -38,13 +34,9 @@ const CellWithoutMemo = ({
         index: number;
         onClick: (v: number) => void;
         mode: Mode;
-        value: {
-            month: number;
-            year: number;
-            date: number;
-        };
+        value?: CellValue<Mode>;
     }
->) => {
+>) {
     const handleCellClick = useCallback(() => onClick(index), [onClick, index]);
     const context = useContext(CalendarContext);
     const props = { onClick: handleCellClick, ...rest };
@@ -53,10 +45,10 @@ const CellWithoutMemo = ({
     ) : (
         <div {...props} />
     );
-};
+}
 const Cell = memo(CellWithoutMemo);
 
-const TBody = ({ cells, onCellClick, col, row, mode }: TBodyProps) => {
+function TBody({ cells, onCellClick, col, row, mode }: TBodyProps<Mode>) {
     const { prefixCls } = useContext(CalendarContext);
     const cls = useMemo(
         () => ({
@@ -128,6 +120,6 @@ const TBody = ({ cells, onCellClick, col, row, mode }: TBodyProps) => {
     };
 
     return <div className={cls.body}>{renderBody()}</div>;
-};
+}
 
 export default memo(TBody);

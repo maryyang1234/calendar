@@ -46,13 +46,38 @@ export interface CalendarComponents {
     Cell?: React.ComponentType<
         HTMLAttributes<any> & {
             mode: Mode;
-            value?: {
-                month: number;
-                year: number;
-                date: number;
-            };
+            value?: CellValue<Mode>;
         }
     >;
     HeaderButton?: React.ComponentType<HTMLAttributes<any> & { mode: Mode; type: HeaderButtonType }>;
     HeaderSwitcher?: React.ComponentType<HTMLAttributes<any> & { mode: Mode; type: HeaderSwitcherType }>;
 }
+
+export interface DateCellValue {
+    date: number;
+    month: number;
+    year: number;
+}
+
+export interface MonthCellValue {
+    month: number;
+    year: number;
+}
+
+export interface YearCellValue {
+    year: number;
+}
+
+export interface DecadeCellValue {
+    year: number;
+}
+
+export type CellValue<T extends Mode> = T extends 'date'
+    ? DateCellValue
+    : T extends 'month'
+    ? MonthCellValue
+    : T extends 'year'
+    ? YearCellValue
+    : T extends 'decade'
+    ? DecadeCellValue
+    : DateCellValue | MonthCellValue | YearCellValue | DecadeCellValue;

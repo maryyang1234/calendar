@@ -73,7 +73,7 @@ const MonthPanel = ({ now, value, onChange, current, disabledMonth }: MonthPanel
 
     return (
         <div className={cls.table}>
-            <TBody cells={cells} onCellClick={onMonthClick} col={C_COL} row={C_ROW} mode={'month'} />
+            <TBody cells={cells} onCellClick={onMonthClick} col={C_COL} row={C_ROW} mode="month" />
         </div>
     );
 };
