@@ -15,6 +15,8 @@ export type SharedCalendarProps = Override<
         defaultValue?: TDate | null;
         // callback when user change
         onChange?: (v: Date) => void;
+        // controlled value of range display
+        rangeValue?: [TDate | null, TDate | null];
         // controlled current display panel value
         current?: TDate;
         // uncontrolled default current display panel value

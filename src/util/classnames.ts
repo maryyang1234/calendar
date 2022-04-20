@@ -3,5 +3,5 @@ export default (...args: (string | void | boolean)[]): string => {
     args.forEach(cls => {
         if (cls) finalCls += cls + ' ';
     });
-    return finalCls;
+    return finalCls.trim();
 };

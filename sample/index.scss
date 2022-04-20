@@ -94,6 +94,13 @@ body {
     &.zr-cal-cell-empty {
         cursor: default;
     }
+    &.zr-cal-range-start,
+    &.zr-cal-range-end {
+        background: #b5c2f1;
+    }
+    &.zr-cal-range-middle {
+        background: #cfd4e3;
+    }
 }
 .zr-cal-date-wrap .zr-cal-cell {
     width: 4em;

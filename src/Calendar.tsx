@@ -26,6 +26,7 @@ const Calendar = ({
     value: _value,
     defaultValue = null,
     onChange: _onChange,
+    rangeValue,
     current: _current,
     defaultCurrent,
     onCurrentChange: _onCurrentChange,
@@ -37,6 +38,13 @@ const Calendar = ({
     const d = useMemo(() => new Date(), []);
     const [value, onChange] = useUncontrolled<TDate | null, Date>(_value, defaultValue, _onChange);
     const standardValue = useMemo(() => standard(value), [value]);
+    const standardRangeValue = useMemo(
+        () =>
+            rangeValue
+                ? ([standard(rangeValue[0]), standard(rangeValue[1])] as [Date | null, Date | null])
+                : rangeValue,
+        [rangeValue]
+    );
     const [current, onCurrentChange] = useUncontrolled<TDate, Date>(
         _current,
         defaultCurrent || value || d,
@@ -83,6 +91,7 @@ const Calendar = ({
         const sharedProps = {
             now: standardNow,
             value: standardValue === null ? undefined : standardValue,
+            rangeValue: standardRangeValue,
             current: standardCurrent,
             onCurrentChange
         };
@@ -116,6 +125,7 @@ const Calendar = ({
         onYearChange,
         standardCurrent,
         standardNow,
+        standardRangeValue,
         standardValue
     ]);
 

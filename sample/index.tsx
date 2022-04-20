@@ -4,7 +4,7 @@ import moment from 'moment';
 import raf from 'raf';
 
 import { Calendar, Month, Year, Time } from '../src';
-import { Mode, TDate } from '../src/interface';
+import { CellValue, Mode, TDate } from '../src/interface';
 import './index.scss';
 
 const scrollMap: { [key: number]: number } = {};
@@ -57,7 +57,12 @@ const Clock = () => {
     return <Time onChange={console.log} value={timer} className="zr-time-css" />;
 };
 
-const Cell = ({ children, mode, ...rest }: HTMLAttributes<HTMLDivElement> & { mode: Mode }) => {
+const Cell = ({
+    children,
+    mode,
+    value,
+    ...rest
+}: HTMLAttributes<HTMLDivElement> & { mode: Mode; value?: CellValue<Mode> }) => {
     return (
         <div {...rest}>
             <span>{children}</span>
@@ -88,6 +93,13 @@ const App = () => {
                 onCurrentChange={logDateCurrentFormat}
                 components={{ Cell: Cell }}
                 disabledRule={{ date: disabledDate, month: disabledMonth, year: disabledYear, decade: disabledDecade }}
+            />
+            <Calendar
+                onChange={logDateFormat}
+                onCurrentChange={logDateCurrentFormat}
+                components={{ Cell: Cell }}
+                disabledRule={{ date: disabledDate, month: disabledMonth, year: disabledYear, decade: disabledDecade }}
+                rangeValue={[new Date(+now - 1000 * 60 * 60 * 24 * 30), new Date(+now)]}
             />
             <Month onChange={logDateFormat} onCurrentChange={logDateCurrentFormat} now={null} />
             <Year onChange={logDateFormat} onCurrentChange={logDateCurrentFormat} />

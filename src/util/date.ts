@@ -3,7 +3,7 @@ const INVALID_DATA_STRING = 'Invalid Date';
 const REGEX_FORMAT = /\[([^\]]+)]|Y{1,4}|M{1,4}|D{1,2}|d{1,4}|H{1,2}|h{1,2}|a|A|m{1,2}|s{1,2}|Z{1,2}|SSS/g;
 const TS_HOUR = 60 * 60 * 1000;
 const TS_DAY = 24 * TS_HOUR;
-export type Unit = 'second' | 'minute' | 'hour' | 'date' | 'month' | 'year';
+export type Unit = 'ms' | 'second' | 'minute' | 'hour' | 'date' | 'month' | 'year';
 
 const padZero = (s: string | number, length: number) => {
     s = '0000' + s;
@@ -82,7 +82,11 @@ export const add = (d: Date, value: number, unit: Unit) => {
     return d;
 };
 
-const SetMap: Record<Unit, 'setSeconds' | 'setMinutes' | 'setHours' | 'setDate' | 'setMonth' | 'setFullYear'> = {
+const SetMap: Record<
+    Unit,
+    'setMilliseconds' | 'setSeconds' | 'setMinutes' | 'setHours' | 'setDate' | 'setMonth' | 'setFullYear'
+> = {
+    ms: 'setMilliseconds',
     second: 'setSeconds',
     minute: 'setMinutes',
     hour: 'setHours',
@@ -91,8 +95,19 @@ const SetMap: Record<Unit, 'setSeconds' | 'setMinutes' | 'setHours' | 'setDate' 
     year: 'setFullYear'
 };
 
-export const set = (d: Date, value: number, unit: Unit) => {
+type ValueMap = Partial<Record<Unit, number>>;
+
+export function set(d: Date, valueMap: ValueMap): Date;
+export function set(d: Date, value: number, unit: Unit): Date;
+export function set(d: Date, value: number | ValueMap, unit?: Unit) {
     const newD = new Date(+d);
-    newD[SetMap[unit]](value);
+    if (typeof value === 'number') {
+        newD[SetMap[unit!]](value);
+    } else {
+        for (const key in value) {
+            const v = value[key as keyof ValueMap];
+            if (v != null) newD[SetMap[key as Unit]](v);
+        }
+    }
     return newD;
-};
+}

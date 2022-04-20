@@ -22,7 +22,8 @@ const getDays = (
     cls: Record<string, string>,
     activeV?: Date,
     now?: Date,
-    disabledDate?: DateBodyProps['disabledDate']
+    disabledDate?: DateBodyProps['disabledDate'],
+    rangeValue?: DateBodyProps['rangeValue']
 ) => {
     v = new Date(+v);
     // 月天数
@@ -53,6 +54,51 @@ const getDays = (
             const date = t.getDate();
             const month = t.getMonth();
             const year = t.getFullYear();
+            let className = classnames(
+                active && cls.active,
+                disabled && cls.disabled,
+                isNow && cls.now,
+                current === 'prev' && cls.prev,
+                current === 'next' && cls.next
+            );
+            if (rangeValue) {
+                const rangeStart = rangeValue?.[0];
+                const rangeEnd = rangeValue?.[1];
+                let startOrEndTag = false;
+                if (rangeStart) {
+                    const rangeStartString = format(rangeStart, 'YYYYMMDD');
+                    if (tString === rangeStartString) {
+                        className = classnames(className, cls.rangeStart);
+                        startOrEndTag = true;
+                    }
+                }
+                if (rangeEnd) {
+                    const rangeEndString = format(rangeEnd, 'YYYYMMDD');
+                    if (tString === rangeEndString) {
+                        className = classnames(className, cls.rangeEnd);
+                        startOrEndTag = true;
+                    }
+                }
+                if (!startOrEndTag && rangeStart && rangeEnd && +rangeStart <= +rangeEnd) {
+                    // const minRangeStart = +set(rangeStart, {
+                    //     ms: 0,
+                    //     second: 0,
+                    //     minute: 0,
+                    //     hour: 0
+                    // });
+                    // const maxRangeEnd = +set(rangeEnd, {
+                    //     ms: 999,
+                    //     second: 59,
+                    //     minute: 59,
+                    //     hour: 23
+                    // });
+                    const tTS = +t;
+                    if (tTS > +rangeStart && tTS < +rangeEnd) {
+                        className = classnames(className, cls.rangeMiddle);
+                    }
+                }
+            }
+
             panelInfo.push({
                 value: {
                     year,
@@ -63,13 +109,7 @@ const getDays = (
                 current,
                 active,
                 disabled,
-                className: classnames(
-                    active && cls.active,
-                    disabled && cls.disabled,
-                    isNow && cls.now,
-                    current === 'prev' && cls.prev,
-                    current === 'next' && cls.next
-                )
+                className
             });
         }
     }
@@ -78,7 +118,7 @@ const getDays = (
 
 const defaultWeekdays = DefaultContext.locale.weekdays;
 
-const DateBody = ({ value, onChange, current, onCurrentChange, now, disabledDate }: DateBodyProps) => {
+const DateBody = ({ value, onChange, rangeValue, current, onCurrentChange, now, disabledDate }: DateBodyProps) => {
     const { locale, prefixCls, onChangeWhenPrevNextClick, disabledPrevNextClickWhenDisabled } =
         useContext(CalendarContext);
     const weekdays = locale?.weekdays || defaultWeekdays;
@@ -101,13 +141,16 @@ const DateBody = ({ value, onChange, current, onCurrentChange, now, disabledDate
             now: prefixCls + '-now',
             disabled: prefixCls + '-disabled',
             prev: prefixCls + '-prev',
-            next: prefixCls + '-next'
+            next: prefixCls + '-next',
+            rangeStart: prefixCls + '-range-start',
+            rangeEnd: prefixCls + '-range-end',
+            rangeMiddle: prefixCls + '-range-middle'
         };
     }, [prefixCls]);
 
     const panelInfo = useMemo(
-        () => getDays(current, cls, value, now, disabledDate),
-        [current, cls, value, now, disabledDate]
+        () => getDays(current, cls, value, now, disabledDate, rangeValue),
+        [current, cls, value, now, disabledDate, rangeValue]
     );
 
     const onDateClick = useCallback(

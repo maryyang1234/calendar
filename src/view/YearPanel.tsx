@@ -3,7 +3,7 @@ import React, { memo, useCallback, useContext, useEffect, useMemo, useRef } from
 import CalendarContext from 'src/CalendarContext';
 import { DisabledFunc } from 'src/interface';
 import classnames from 'src/util/classnames';
-import { set } from 'src/util/date';
+import { format, set } from 'src/util/date';
 import { SharedPanelProps } from 'src/view/interface';
 import TBody from 'src/view/TBody';
 
@@ -14,13 +14,12 @@ type YearPanelProps = SharedPanelProps & { disabledYear?: DisabledFunc };
 const C_COL = 3;
 const C_ROW = 4;
 
-const YearPanel = ({ now, value, onChange, current, onCurrentChange, disabledYear }: YearPanelProps) => {
+const YearPanel = ({ now, value, onChange, rangeValue, current, onCurrentChange, disabledYear }: YearPanelProps) => {
     const baseYear = useMemo(() => ((current.getFullYear() / 10) | 0) * 10, [current]);
     const valueYear = useMemo(() => value?.getFullYear(), [value]);
     const nowYear = useMemo(() => now?.getFullYear(), [now]);
-    const { prefixCls, onlyValidYear, onChangeWhenPrevNextClick, disabledPrevNextClickWhenDisabled } = useContext(
-        CalendarContext
-    );
+    const { prefixCls, onlyValidYear, onChangeWhenPrevNextClick, disabledPrevNextClickWhenDisabled } =
+        useContext(CalendarContext);
 
     // use ref to reduce reRender
     const currentRef = useRef(current);
@@ -45,23 +44,54 @@ const YearPanel = ({ now, value, onChange, current, onCurrentChange, disabledYea
             const isCurrent = i < 0 ? 'prev' : i > 9 ? 'next' : 'current';
             const isNow = year === nowYear;
             const disabled = disabledYear?.(set(current, year, 'year'), value);
+            const rangeStartCls = prefixCls + '-range-start';
+            const rangeEndCls = prefixCls + '-range-end';
+            const rangeMiddleCls = prefixCls + '-range-middle';
+            let className = classnames(
+                active && activeCls,
+                isNow && nowCls,
+                disabled && disabledCls,
+                isCurrent === 'prev' && prevCls,
+                isCurrent === 'next' && nextCls
+            );
+            if (rangeValue) {
+                const t = set(current, year, 'year');
+                const rangeStart = rangeValue?.[0];
+                const rangeEnd = rangeValue?.[1];
+                let startOrEndTag = false;
+                const tString = format(t, 'YYYY');
+                if (rangeStart) {
+                    const rangeStartString = format(rangeStart, 'YYYY');
+                    if (tString === rangeStartString) {
+                        className = classnames(className, rangeStartCls);
+                        startOrEndTag = true;
+                    }
+                }
+                if (rangeEnd) {
+                    const rangeEndString = format(rangeEnd, 'YYYY');
+                    if (tString === rangeEndString) {
+                        className = classnames(className, rangeEndCls);
+                        startOrEndTag = true;
+                    }
+                }
+                if (!startOrEndTag && rangeStart && rangeEnd && +rangeStart <= +rangeEnd) {
+                    const tTS = +t;
+                    if (tTS > +rangeStart && tTS < +rangeEnd) {
+                        className = classnames(className, rangeMiddleCls);
+                    }
+                }
+            }
             const cellInfo = {
                 children: year,
                 current: isCurrent,
                 disabled,
                 year,
-                className: classnames(
-                    active && activeCls,
-                    isNow && nowCls,
-                    disabled && disabledCls,
-                    isCurrent === 'prev' && prevCls,
-                    isCurrent === 'next' && nextCls
-                )
+                className
             };
             cells.push(cellInfo);
         }
         return cells;
-    }, [prefixCls, onlyValidYear, baseYear, valueYear, nowYear, disabledYear, current, value]);
+    }, [prefixCls, onlyValidYear, baseYear, valueYear, nowYear, disabledYear, current, value, rangeValue]);
 
     const onYearClick = useCallback(
         (index: number) => {
