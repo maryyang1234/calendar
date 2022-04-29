@@ -59,7 +59,9 @@ const Clock = () => {
 
 const Cell = ({
     children,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     mode,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     value,
     ...rest
 }: HTMLAttributes<HTMLDivElement> & { mode: Mode; value?: CellValue<Mode> }) => {
@@ -95,6 +97,7 @@ const App = () => {
                 disabledRule={{ date: disabledDate, month: disabledMonth, year: disabledYear, decade: disabledDecade }}
             />
             <Calendar
+                value={null}
                 onChange={logDateFormat}
                 onCurrentChange={logDateCurrentFormat}
                 components={{ Cell: Cell }}

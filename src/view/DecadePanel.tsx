@@ -6,6 +6,7 @@ import classnames from 'src/util/classnames';
 import { SharedPanelProps } from 'src/view/interface';
 import TBody from 'src/view/TBody';
 import { DisabledFunc } from 'src/interface';
+import useCls from 'src/useCls';
 
 import getChangedValue from './getChangedValue';
 
@@ -18,10 +19,10 @@ const DecadePanel = ({ now, value, onChange, current, onCurrentChange, disabledD
     const baseYear = useMemo(() => ((current.getFullYear() / 100) | 0) * 100, [current]);
     const valueYear = useMemo(() => value?.getFullYear(), [value]);
     const nowYear = useMemo(() => now?.getFullYear(), [now]);
-    const { prefixCls, onlyValidDecade, onChangeWhenPrevNextClick, disabledPrevNextClickWhenDisabled } = useContext(
-        CalendarContext
-    );
+    const { onlyValidDecade, onChangeWhenPrevNextClick, disabledPrevNextClickWhenDisabled } =
+        useContext(CalendarContext);
 
+    const cls = useCls();
     // use ref to reduce reRender
     const currentRef = useRef(current);
     const valueRef = useRef(value);
@@ -32,11 +33,6 @@ const DecadePanel = ({ now, value, onChange, current, onCurrentChange, disabledD
 
     const cells = useMemo(() => {
         const cells = [];
-        const activeCls = prefixCls + '-active';
-        const disabledCls = prefixCls + '-disabled';
-        const nowCls = prefixCls + '-now';
-        const prevCls = prefixCls + '-prev';
-        const nextCls = prefixCls + '-next';
         const start = onlyValidDecade ? 0 : -1;
         const end = (onlyValidDecade ? 10 : C_COL * C_ROW) + start;
         for (let i = start; i < end; i++) {
@@ -52,17 +48,17 @@ const DecadePanel = ({ now, value, onChange, current, onCurrentChange, disabledD
                 disabled,
                 year,
                 className: classnames(
-                    active && activeCls,
-                    isNow && nowCls,
-                    disabled && disabledCls,
-                    isCurrent === 'prev' && prevCls,
-                    isCurrent === 'next' && nextCls
+                    active && cls.active,
+                    isNow && cls.now,
+                    disabled && cls.disabled,
+                    isCurrent === 'prev' && cls.prev,
+                    isCurrent === 'next' && cls.next
                 )
             };
             cells.push(cellInfo);
         }
         return cells;
-    }, [prefixCls, onlyValidDecade, baseYear, valueYear, nowYear, disabledDecade, current, value]);
+    }, [onlyValidDecade, baseYear, valueYear, nowYear, disabledDecade, current, value, cls]);
 
     const onYearClick = useCallback(
         (index: number) => {
@@ -89,13 +85,6 @@ const DecadePanel = ({ now, value, onChange, current, onCurrentChange, disabledD
             onChangeWhenPrevNextClick,
             onCurrentChange
         ]
-    );
-
-    const cls = useMemo(
-        () => ({
-            table: prefixCls + '-table'
-        }),
-        [prefixCls]
     );
 
     return (

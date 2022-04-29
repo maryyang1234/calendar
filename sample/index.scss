@@ -94,8 +94,8 @@ body {
     &.zr-cal-cell-empty {
         cursor: default;
     }
-    &.zr-cal-range-start,
-    &.zr-cal-range-end {
+    &.zr-cal-range-first,
+    &.zr-cal-range-last {
         background: #b5c2f1;
     }
     &.zr-cal-range-middle {

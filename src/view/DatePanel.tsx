@@ -6,6 +6,7 @@ import classnames from 'src/util/classnames';
 import CalendarContext, { DefaultContext } from 'src/CalendarContext';
 import { SharedPanelProps } from 'src/view/interface';
 import TBody from 'src/view/TBody';
+import useCls from 'src/useCls';
 
 import getChangedValue from './getChangedValue';
 
@@ -19,7 +20,7 @@ const C_ROW = 6;
 
 const getDays = (
     v: Date,
-    cls: Record<string, string>,
+    cls: ReturnType<typeof useCls>,
     activeV?: Date,
     now?: Date,
     disabledDate?: DateBodyProps['disabledDate'],
@@ -68,30 +69,21 @@ const getDays = (
                 if (rangeStart) {
                     const rangeStartString = format(rangeStart, 'YYYYMMDD');
                     if (tString === rangeStartString) {
-                        className = classnames(className, cls.rangeStart);
+                        className = classnames(className, cls.rangeFirst);
                         startOrEndTag = true;
                     }
                 }
                 if (rangeEnd) {
                     const rangeEndString = format(rangeEnd, 'YYYYMMDD');
                     if (tString === rangeEndString) {
-                        className = classnames(className, cls.rangeEnd);
+                        className = classnames(className, cls.rangeLast);
                         startOrEndTag = true;
                     }
                 }
+                if (startOrEndTag && (!rangeStart || !rangeEnd)) {
+                    className = classnames(className, cls.rangeUnclosed);
+                }
                 if (!startOrEndTag && rangeStart && rangeEnd && +rangeStart <= +rangeEnd) {
-                    // const minRangeStart = +set(rangeStart, {
-                    //     ms: 0,
-                    //     second: 0,
-                    //     minute: 0,
-                    //     hour: 0
-                    // });
-                    // const maxRangeEnd = +set(rangeEnd, {
-                    //     ms: 999,
-                    //     second: 59,
-                    //     minute: 59,
-                    //     hour: 23
-                    // });
                     const tTS = +t;
                     if (tTS > +rangeStart && tTS < +rangeEnd) {
                         className = classnames(className, cls.rangeMiddle);
@@ -119,8 +111,7 @@ const getDays = (
 const defaultWeekdays = DefaultContext.locale.weekdays;
 
 const DateBody = ({ value, onChange, rangeValue, current, onCurrentChange, now, disabledDate }: DateBodyProps) => {
-    const { locale, prefixCls, onChangeWhenPrevNextClick, disabledPrevNextClickWhenDisabled } =
-        useContext(CalendarContext);
+    const { locale, onChangeWhenPrevNextClick, disabledPrevNextClickWhenDisabled } = useContext(CalendarContext);
     const weekdays = locale?.weekdays || defaultWeekdays;
 
     // use ref to reduce reRender
@@ -131,22 +122,7 @@ const DateBody = ({ value, onChange, rangeValue, current, onCurrentChange, now, 
         valueRef.current = value;
     }, [current, value]);
 
-    const cls = useMemo(() => {
-        return {
-            table: prefixCls + '-table',
-            head: prefixCls + '-thead',
-            row: prefixCls + '-row',
-            cell: prefixCls + '-cell',
-            active: prefixCls + '-active',
-            now: prefixCls + '-now',
-            disabled: prefixCls + '-disabled',
-            prev: prefixCls + '-prev',
-            next: prefixCls + '-next',
-            rangeStart: prefixCls + '-range-start',
-            rangeEnd: prefixCls + '-range-end',
-            rangeMiddle: prefixCls + '-range-middle'
-        };
-    }, [prefixCls]);
+    const cls = useCls();
 
     const panelInfo = useMemo(
         () => getDays(current, cls, value, now, disabledDate, rangeValue),
