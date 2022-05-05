@@ -1,6 +1,6 @@
 {
   "name": "@z-r/calendar",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "A easy to use calendar",
   "main": "lib/index.js",
   "files": [
