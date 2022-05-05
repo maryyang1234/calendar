@@ -1,8 +1,7 @@
 import { HTMLAttributes, ReactNode } from 'react';
+import { Override } from './types';
 
 export type TDate = number | Date | { valueOf(): number };
-
-export type Override<T1, T2> = Omit<T1, keyof T2> & T2;
 
 export type SharedCalendarProps = Override<
     HTMLAttributes<HTMLDivElement>,

@@ -1,7 +1,8 @@
 import React, { HTMLAttributes, memo, ReactNode, useCallback, useContext, useMemo } from 'react';
 
 import CalendarContext from 'src/CalendarContext';
-import { CellValue, Mode, Override } from 'src/interface';
+import { CellValue, Mode } from 'src/interface';
+import { Override } from 'src/types';
 import classnames from 'src/util/classnames';
 
 interface TBodyProps<T extends Mode> {

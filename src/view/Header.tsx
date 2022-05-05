@@ -1,8 +1,9 @@
 import React, { HTMLAttributes, memo, useCallback, useContext, useMemo } from 'react';
 
 import { add } from 'src/util/date';
-import { Override, Mode, HeaderButtonType, HeaderSwitcherType } from 'src/interface';
+import { Mode, HeaderButtonType, HeaderSwitcherType } from 'src/interface';
 import CalendarContext from 'src/CalendarContext';
+import { Override } from 'src/types';
 
 const HeaderButtonWithoutMemo = ({
     type,
