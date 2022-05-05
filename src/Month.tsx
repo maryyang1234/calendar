@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useContext, useMemo, useState } from 'react';
+import React, { memo, useCallback, useMemo, useState } from 'react';
 
 import MonthPanel from 'src/view/MonthPanel';
 import YearPanel from 'src/view/YearPanel';
@@ -6,7 +6,7 @@ import DecadePanel from 'src/view/DecadePanel';
 import Header from 'src/view/Header';
 import standard from 'src/util/standard';
 import classnames from 'src/util/classnames';
-import CalendarContext, { withContext } from 'src/CalendarContext';
+import { TCalendarContext, useCalendarContext } from 'src/CalendarContext';
 import useUncontrolled from 'src/useUncontrolled';
 import { DisabledFunc, Mode, SharedCalendarProps, TDate } from 'src/interface';
 
@@ -19,20 +19,24 @@ type MonthProps = SharedCalendarProps & {
     };
 };
 
-const Month = ({
-    now,
-    value: _value,
-    defaultValue = null,
-    onChange: _onChange,
-    rangeValue,
-    current: _current,
-    defaultCurrent,
-    onCurrentChange: _onCurrentChange,
-    sidebar,
-    className,
-    disabledRule = {},
-    ...rest
-}: MonthProps) => {
+const Month = (props: MonthProps & TCalendarContext) => {
+    const [
+        context,
+        {
+            now,
+            value: _value,
+            defaultValue = null,
+            onChange: _onChange,
+            rangeValue,
+            current: _current,
+            defaultCurrent,
+            onCurrentChange: _onCurrentChange,
+            sidebar,
+            className,
+            disabledRule = {},
+            ...rest
+        }
+    ] = useCalendarContext<MonthProps>(props);
     const d = useMemo(() => new Date(), []);
     const [value, onChange] = useUncontrolled<TDate | null, Date>(_value, defaultValue, _onChange);
     const standardValue = useMemo(() => standard(value), [value]);
@@ -69,7 +73,6 @@ const Month = ({
         },
         [onCurrentChange]
     );
-    const context = useContext(CalendarContext);
     const cls = useMemo(() => {
         const prefixCls = context.prefixCls;
         return {
@@ -130,4 +133,4 @@ const Month = ({
     );
 };
 
-export default withContext<MonthProps>(memo(Month));
+export default memo(Month);

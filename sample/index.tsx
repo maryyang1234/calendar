@@ -42,7 +42,7 @@ const format = (v: TDate) => {
 const Clock = () => {
     const [timer, setTimer] = useState(() => new Date());
     useEffect(() => {
-        let t;
+        let t: ReturnType<typeof setTimeout>;
         const f = () => {
             t = setTimeout(() => {
                 setTimer(new Date());
@@ -84,8 +84,8 @@ const disabledYear = (t: TDate) => {
 const disabledDecade = (t: TDate) => {
     return new Date(+t).getFullYear() > new Date().getFullYear();
 };
-const logDateFormat = v => console.log('value', format(v));
-const logDateCurrentFormat = v => console.log('current', format(v));
+const logDateFormat = (v: Date) => console.log('value', format(v));
+const logDateCurrentFormat = (v: Date) => console.log('current', format(v));
 
 const App = () => {
     return (

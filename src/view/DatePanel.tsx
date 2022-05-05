@@ -22,7 +22,7 @@ const getDays = (
     v: Date,
     cls: ReturnType<typeof useCls>,
     activeV?: Date,
-    now?: Date,
+    now?: Date | null,
     disabledDate?: DateBodyProps['disabledDate'],
     rangeValue?: DateBodyProps['rangeValue']
 ) => {

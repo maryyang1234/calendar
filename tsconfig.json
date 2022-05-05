@@ -20,6 +20,6 @@
         "baseUrl": "./",
         "outDir": "./types"
     },
-    "include": ["src/**/*.ts", "src/**/*.tsx"],
+    "include": ["src/**/*.ts", "src/**/*.tsx", "sample/**/*.tsx"],
     "exclude": ["src/**/*.js", "src/**/*.jsx"]
 }

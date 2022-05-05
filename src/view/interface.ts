@@ -10,5 +10,5 @@ export interface SharedPanelProps {
     // 面板切换回调
     onCurrentChange: (t: Date) => void;
     // date of now
-    now?: Date;
+    now?: Date | null;
 }
