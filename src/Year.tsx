@@ -1,9 +1,9 @@
-import React, { memo, useCallback, useMemo, useState } from 'react';
+import React, { memo, useCallback, useContext, useMemo, useState } from 'react';
 
 import YearPanel from 'src/view/YearPanel';
 import DecadePanel from 'src/view/DecadePanel';
 import Header from 'src/view/Header';
-import { TCalendarContext, useCalendarContext } from 'src/CalendarContext';
+import CalendarContext, { withContext } from 'src/CalendarContext';
 import useUncontrolled from 'src/useUncontrolled';
 import standard from 'src/util/standard';
 import classnames from 'src/util/classnames';
@@ -17,24 +17,20 @@ type YearProps = SharedCalendarProps & {
     };
 };
 
-const Year = (props: YearProps & TCalendarContext) => {
-    const [
-        context,
-        {
-            now,
-            value: _value,
-            defaultValue = null,
-            onChange: _onChange,
-            rangeValue,
-            current: _current,
-            defaultCurrent,
-            onCurrentChange: _onCurrentChange,
-            sidebar,
-            className,
-            disabledRule = {},
-            ...rest
-        }
-    ] = useCalendarContext<YearProps>(props);
+const Year = ({
+    now,
+    value: _value,
+    defaultValue = null,
+    onChange: _onChange,
+    rangeValue,
+    current: _current,
+    defaultCurrent,
+    onCurrentChange: _onCurrentChange,
+    sidebar,
+    className,
+    disabledRule = {},
+    ...rest
+}: YearProps) => {
     const d = useMemo(() => new Date(), []);
     const [value, onChange] = useUncontrolled<TDate | null, Date>(_value, defaultValue, _onChange);
     const standardValue = useMemo(() => standard(value), [value]);
@@ -62,6 +58,7 @@ const Year = (props: YearProps & TCalendarContext) => {
         },
         [onCurrentChange]
     );
+    const context = useContext(CalendarContext);
     const cls = useMemo(() => {
         const prefixCls = context.prefixCls;
         return {
@@ -117,4 +114,4 @@ const Year = (props: YearProps & TCalendarContext) => {
     );
 };
 
-export default memo(Year);
+export default withContext<YearProps>(memo(Year));

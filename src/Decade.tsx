@@ -1,11 +1,11 @@
-import React, { memo, useMemo } from 'react';
+import React, { memo, useContext, useMemo } from 'react';
 
 import DecadePanel from 'src/view/DecadePanel';
 import Header from 'src/view/Header';
 import standard from 'src/util/standard';
 import { DisabledFunc, SharedCalendarProps, TDate } from 'src/interface';
 import useUncontrolled from 'src/useUncontrolled';
-import { TCalendarContext, useCalendarContext } from 'src/CalendarContext';
+import CalendarContext, { withContext } from 'src/CalendarContext';
 import classnames from 'src/util/classnames';
 
 type DecadeProps = SharedCalendarProps & {
@@ -15,23 +15,19 @@ type DecadeProps = SharedCalendarProps & {
     };
 };
 
-const Decade = (props: DecadeProps & TCalendarContext) => {
-    const [
-        context,
-        {
-            now,
-            value: _value,
-            defaultValue = null,
-            onChange: _onChange,
-            current: _current,
-            defaultCurrent,
-            onCurrentChange: _onCurrentChange,
-            sidebar,
-            className,
-            disabledRule = {},
-            ...rest
-        }
-    ] = useCalendarContext<DecadeProps>(props);
+const Decade = ({
+    now,
+    value: _value,
+    defaultValue = null,
+    onChange: _onChange,
+    current: _current,
+    defaultCurrent,
+    onCurrentChange: _onCurrentChange,
+    sidebar,
+    className,
+    disabledRule = {},
+    ...rest
+}: DecadeProps) => {
     const d = useMemo(() => new Date(), []);
     const [value, onChange] = useUncontrolled<TDate | null, Date>(_value, defaultValue, _onChange);
     const standardValue = useMemo(() => standard(value), [value]);
@@ -43,6 +39,7 @@ const Decade = (props: DecadeProps & TCalendarContext) => {
     const standardCurrent = useMemo(() => standard(current), [current]);
     const standardNow = useMemo(() => standard(now === undefined ? d : now), [d, now]);
     const { decade: disabledDecade } = disabledRule;
+    const context = useContext(CalendarContext);
     const cls = useMemo(() => {
         const prefixCls = context.prefixCls;
         return {
@@ -73,4 +70,4 @@ const Decade = (props: DecadeProps & TCalendarContext) => {
     );
 };
 
-export default memo(Decade);
+export default withContext<DecadeProps>(memo(Decade));

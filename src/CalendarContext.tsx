@@ -1,4 +1,4 @@
-import { createContext, useContext, useMemo } from 'react';
+import React, { ComponentType, createContext, memo, useContext, useMemo } from 'react';
 
 import { CalendarComponents } from 'src/interface';
 import { months, weekdays } from 'src/locale/en_us';
@@ -60,4 +60,16 @@ export const useCalendarContext = <T,>(props: T & TCalendarContext): [TCalendarC
         [context, inheritContext]
     );
     return [finalContext, rest];
+};
+
+export const withContext = <T,>(Component: ComponentType<T>) => {
+    const ComponentWithContext = (props: T & TCalendarContext) => {
+        const [finalContext, rest] = useCalendarContext(props);
+        return (
+            <CalendarContext.Provider value={finalContext}>
+                <Component {...rest} />
+            </CalendarContext.Provider>
+        );
+    };
+    return memo(ComponentWithContext);
 };

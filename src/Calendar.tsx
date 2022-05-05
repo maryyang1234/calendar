@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useMemo, useState } from 'react';
+import React, { memo, useCallback, useContext, useMemo, useState } from 'react';
 
 import DatePanel from 'src/view/DatePanel';
 import MonthPanel from 'src/view/MonthPanel';
@@ -8,10 +8,10 @@ import Header from 'src/view/Header';
 import standard from 'src/util/standard';
 import classnames from 'src/util/classnames';
 import { DisabledFunc, Mode, SharedCalendarProps, TDate } from 'src/interface';
-import { TCalendarContext, useCalendarContext } from 'src/CalendarContext';
+import CalendarContext, { withContext } from 'src/CalendarContext';
 import useUncontrolled from 'src/useUncontrolled';
 
-export type CalendarProps = SharedCalendarProps & {
+type CalendarProps = SharedCalendarProps & {
     // disable rule
     disabledRule?: {
         date?: DisabledFunc;
@@ -21,25 +21,20 @@ export type CalendarProps = SharedCalendarProps & {
     };
 };
 
-const Calendar = (props: CalendarProps & TCalendarContext) => {
-    const [
-        context,
-        {
-            now,
-            value: _value,
-            defaultValue = null,
-            onChange: _onChange,
-            rangeValue,
-            current: _current,
-            defaultCurrent,
-            onCurrentChange: _onCurrentChange,
-            sidebar,
-            className,
-            disabledRule = {},
-            ...rest
-        }
-    ] = useCalendarContext<CalendarProps>(props);
-
+const Calendar = ({
+    now,
+    value: _value,
+    defaultValue = null,
+    onChange: _onChange,
+    rangeValue,
+    current: _current,
+    defaultCurrent,
+    onCurrentChange: _onCurrentChange,
+    sidebar,
+    className,
+    disabledRule = {},
+    ...rest
+}: CalendarProps) => {
     const d = useMemo(() => new Date(), []);
     const [value, onChange] = useUncontrolled<TDate | null, Date>(_value, defaultValue, _onChange);
     const standardValue = useMemo(() => standard(value), [value]);
@@ -81,6 +76,7 @@ const Calendar = (props: CalendarProps & TCalendarContext) => {
         },
         [onCurrentChange]
     );
+    const context = useContext(CalendarContext);
     const cls = useMemo(() => {
         const prefixCls = context.prefixCls;
         return {
@@ -146,4 +142,4 @@ const Calendar = (props: CalendarProps & TCalendarContext) => {
     );
 };
 
-export default memo(Calendar);
+export default withContext<CalendarProps>(memo(Calendar));
