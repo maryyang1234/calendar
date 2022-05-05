@@ -16,5 +16,6 @@ export type {
     DecadeCellValue,
     CalendarComponents,
     Mode,
-    TDate
+    TDate,
+    HeaderSwitcherType
 } from './interface';

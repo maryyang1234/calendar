@@ -91,6 +91,7 @@ const App = () => {
     return (
         <div>
             <Calendar
+                // value={moment()}
                 onChange={logDateFormat}
                 onCurrentChange={logDateCurrentFormat}
                 components={{ Cell: Cell }}
