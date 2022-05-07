@@ -61,9 +61,9 @@ const Year = ({
     const onDecadeChange = useCallback(
         (current: Date) => {
             onCurrentChange(current);
-            setMode('year');
+            handleModeChange('year');
         },
-        [onCurrentChange]
+        [handleModeChange, onCurrentChange]
     );
     const context = useContext(CalendarContext);
     const cls = useMemo(() => {
