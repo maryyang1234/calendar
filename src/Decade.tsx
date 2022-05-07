@@ -26,6 +26,8 @@ const Decade = ({
     sidebar,
     className,
     disabledRule = {},
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    onModeChange,
     ...rest
 }: DecadeProps) => {
     const d = useMemo(() => new Date(), []);

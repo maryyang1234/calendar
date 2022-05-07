@@ -24,6 +24,8 @@ export type SharedCalendarProps = Override<
         now?: TDate | null;
         // render sidebar right to the table
         sidebar?: ReactNode;
+        // callback when display panel mode change
+        onModeChange?: (mode: Mode) => void;
     }
 >;
 

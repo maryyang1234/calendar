@@ -29,6 +29,7 @@ const Year = ({
     sidebar,
     className,
     disabledRule = {},
+    onModeChange,
     ...rest
 }: YearProps) => {
     const d = useMemo(() => new Date(), []);
@@ -50,7 +51,13 @@ const Year = ({
     const standardNow = useMemo(() => standard(now === undefined ? d : now), [d, now]);
     const [mode, setMode] = useState<Mode>('year');
     const { year: disabledYear, decade: disabledDecade } = disabledRule;
-    const onModeChange = useCallback((mode: Mode) => setMode(mode), []);
+    const handleModeChange = useCallback(
+        (mode: Mode) => {
+            onModeChange?.(mode);
+            setMode(mode);
+        },
+        [onModeChange]
+    );
     const onDecadeChange = useCallback(
         (current: Date) => {
             onCurrentChange(current);
@@ -104,7 +111,12 @@ const Year = ({
     return (
         <div {...rest} className={classnames(cls.wrap, cls.year, className)}>
             <div className={cls.yearWrap}>
-                <Header value={standardCurrent} onChange={onCurrentChange} mode={mode} onModeChange={onModeChange} />
+                <Header
+                    value={standardCurrent}
+                    onChange={onCurrentChange}
+                    mode={mode}
+                    onModeChange={handleModeChange}
+                />
                 <div className={cls.body}>
                     {panel}
                     {sidebar}
