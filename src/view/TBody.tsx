@@ -107,7 +107,7 @@ function TBody({ cells, onCellClick, col, row, mode }: TBodyProps<Mode>) {
                         onClick={handleClick}
                         mode={mode}
                         value={cellInfo?.value}
-                        disabled={cellInfo.disabled}
+                        disabled={cellInfo?.disabled}
                     >
                         {cellInfo?.children}
                     </Cell>
