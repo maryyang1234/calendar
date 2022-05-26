@@ -47,6 +47,7 @@ export interface CalendarComponents {
     Cell?: React.ComponentType<
         HTMLAttributes<any> & {
             mode: Mode;
+            disabled?: boolean;
             value?: CellValue<Mode>;
         }
     >;

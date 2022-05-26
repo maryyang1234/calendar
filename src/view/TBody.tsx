@@ -36,6 +36,7 @@ function CellWithoutMemo({
         onClick: (v: number) => void;
         mode: Mode;
         value?: CellValue<Mode>;
+        disabled?: boolean;
     }
 >) {
     const handleCellClick = useCallback(() => onClick(index), [onClick, index]);
@@ -106,6 +107,7 @@ function TBody({ cells, onCellClick, col, row, mode }: TBodyProps<Mode>) {
                         onClick={handleClick}
                         mode={mode}
                         value={cellInfo?.value}
+                        disabled={cellInfo.disabled}
                     >
                         {cellInfo?.children}
                     </Cell>
