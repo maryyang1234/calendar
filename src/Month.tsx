@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useContext, useMemo, useState } from 'react';
+import React, { memo, useCallback, useMemo, useState } from 'react';
 
 import MonthPanel from 'src/view/MonthPanel';
 import YearPanel from 'src/view/YearPanel';
@@ -6,9 +6,10 @@ import DecadePanel from 'src/view/DecadePanel';
 import Header from 'src/view/Header';
 import standard from 'src/util/standard';
 import classnames from 'src/util/classnames';
-import CalendarContext, { withContext } from 'src/CalendarContext';
+import { withContext } from 'src/CalendarContext';
 import useUncontrolled from 'src/useUncontrolled';
 import { DisabledFunc, Mode, SharedCalendarProps, TDate } from 'src/interface';
+import useCls from './useCls';
 
 type MonthProps = SharedCalendarProps & {
     // disable rule
@@ -74,16 +75,7 @@ const Month = ({
         },
         [handleModeChange, onCurrentChange]
     );
-    const context = useContext(CalendarContext);
-    const cls = useMemo(() => {
-        const prefixCls = context.prefixCls;
-        return {
-            wrap: prefixCls,
-            month: prefixCls + '-month',
-            monthWrap: prefixCls + '-month-wrap',
-            body: prefixCls + '-body'
-        };
-    }, [context.prefixCls]);
+    const cls = useCls();
 
     const panel = useMemo(() => {
         const sharedProps = {

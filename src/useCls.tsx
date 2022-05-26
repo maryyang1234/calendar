@@ -18,7 +18,11 @@ const useCls = () => {
             rangeFirst: prefixCls + '-range-first',
             rangeLast: prefixCls + '-range-last',
             rangeMiddle: prefixCls + '-range-middle',
-            rangeUnclosed: prefixCls + '-range-unclosed'
+            rangeUnclosed: prefixCls + '-range-unclosed',
+            wrap: prefixCls,
+            month: prefixCls + '-month',
+            monthWrap: prefixCls + '-month-wrap',
+            body: prefixCls + '-body'
         };
     }, [prefixCls]);
     return cls;

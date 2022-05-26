@@ -63,6 +63,9 @@ const MonthPanel = ({ now, value, onChange, rangeValue, current, disabledMonth }
                         startOrEndTag = true;
                     }
                 }
+                if (startOrEndTag && (!rangeStart || !rangeEnd)) {
+                    className = classnames(className, cls.rangeUnclosed);
+                }
                 if (!startOrEndTag && rangeStart && rangeEnd && +rangeStart <= +rangeEnd) {
                     const tTS = +t;
                     if (tTS > +rangeStart && tTS < +rangeEnd) {
