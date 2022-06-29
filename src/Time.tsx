@@ -30,8 +30,6 @@ interface ScrollerInterface {
     scrollTo?: ScrollTo;
 }
 const defaultScrollTo = (element: Element, to: number) => {
-    console.log(element, to);
-
     element.scrollTop = to;
 };
 
@@ -65,6 +63,7 @@ const ScrollerWithoutMemo = ({ value = 0, steps, onChange, prefixCls, scrollTo }
             const rect = firstChild.getClientRects()?.[0];
             if (!rect) return;
             const childHeight = rect.height;
+            if (scrollerDOM.scrollTop === childHeight * v) return false;
 
             (typeof scrollTo === 'function' ? scrollTo : defaultScrollTo)?.(
                 scrollerDOM,
@@ -120,9 +119,12 @@ const ScrollerWithoutMemo = ({ value = 0, steps, onChange, prefixCls, scrollTo }
     const onStepperClick = useCallback(
         (index: number) => {
             // scroll to clicked step
-            updateScroll(index);
+            // if return false means click on the same step, force call updateValue
+            if (updateScroll(index) === false) {
+                updateValue();
+            }
         },
-        [updateScroll]
+        [updateScroll, updateValue]
     );
 
     const cls = useMemo(
