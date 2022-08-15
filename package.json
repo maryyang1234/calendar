@@ -1,5 +1,5 @@
 {
-  "name": "@z-r/calendar",
+  "name": "@ucloud-fe/calendar",
   "version": "0.6.0",
   "description": "A easy to use calendar",
   "main": "lib/index.js",
@@ -24,14 +24,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/z-react-components/calendar.git"
+    "url": "git+https://github.com/ucloud-fe/calendar.git"
   },
   "author": "ZxBing0066",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/z-react-components/calendar/issues"
+    "url": "https://github.com/ucloud-fe/calendar/issues"
   },
-  "homepage": "https://github.com/z-react-components/calendar#readme",
+  "homepage": "https://github.com/ucloud-fe/calendar#readme",
   "devDependencies": {
     "@babel/cli": "^7.13.10",
     "@babel/core": "^7.13.10",
