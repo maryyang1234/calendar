@@ -13,17 +13,12 @@ export default (v: { year?: number; month?: number; date?: number }, current: Da
     const result = new Date(currentDate);
     const { year, month = currentMonth, date } = v;
     if (year != null) result.setFullYear(year);
-    if (month !== currentMonth) {
-        // 如果月没变则不更新月
-        if (getDays(currentDate.getFullYear(), currentMonth) > getDays(result.getFullYear(), month)) {
-            // 当前月的天数大于更新月的天数，先更新天再更新月
-            if (date != null) result.setDate(date);
-            result.setMonth(month);
-        } else {
-            result.setMonth(month);
-            if (date != null) result.setDate(date);
-        }
+    if (getDays(currentDate.getFullYear(), currentMonth) > getDays(result.getFullYear(), month)) {
+        // 当前月的天数大于更新月的天数，先更新天再更新月
+        if (date != null) result.setDate(date);
+        result.setMonth(month);
     } else {
+        result.setMonth(month);
         if (date != null) result.setDate(date);
     }
 
