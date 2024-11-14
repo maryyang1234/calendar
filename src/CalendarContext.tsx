@@ -67,7 +67,7 @@ export const withContext = <T,>(Component: ComponentType<T>) => {
         const [finalContext, rest] = useCalendarContext(props);
         return (
             <CalendarContext.Provider value={finalContext}>
-                <Component {...rest} />
+                <Component {...rest as any} />
             </CalendarContext.Provider>
         );
     };
